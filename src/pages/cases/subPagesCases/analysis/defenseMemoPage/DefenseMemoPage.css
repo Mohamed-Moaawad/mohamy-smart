@@ -1,0 +1,117 @@
+.defense-memo {}
+
+.defense-memo .m_1959ad01:where([data-progress]) {
+    border-color: var(--main-color);
+}
+
+.defense-memo .m_1959ad01:where([data-completed]) {
+    background-color: var(--main-color);
+    border-color: var(--main-color);
+}
+
+.m_2a371ac9:where([data-active]) {
+    background-color: var(--main-color) !important;
+}
+
+.facts-page {}
+
+.defense-memo .head-card {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.defense-memo .head-card .icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: var(--success-color);
+    color: #fff;
+}
+
+.defense-memo .head-card span {
+    padding: 8px 12px;
+    background-color: var(--success-color);
+    color: #fff;
+    border-radius: var(--lg-radius);
+}
+
+.defense-memo .custom-card p {
+    color: var(--text-color);
+    display: -webkit-box;
+    -webkit-line-clamp: 4;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.defense-memo .custom-card .types div {
+    padding: 4px 18px;
+    /* background-color: red; */
+    border-radius: var(--lg-radius);
+    color: #fff;
+}
+
+.defense-memo .custom-card h5.defense {
+    margin: 25px 0;
+    background-color: var(--second-color);
+    padding: 8px;
+    border-radius: var(--sm-radius);
+    color: #1B1B1B;
+    font-weight: 500;
+}
+
+.defense-memo .custom-card .types div:nth-child(1) {
+    border: 2px solid var(--main-color);
+    color: var(--main-color);
+}
+
+
+.legal-analysis h3 {
+    font-size: 1.1rem;
+    font-weight: bold;
+    color: var(--title-color);
+    margin-bottom: 6px;
+}
+
+.legal-analysis .custom-card {
+    color: var(--text-color);
+}
+
+.legal-analysis .custom-card h4,
+.legal-analysis .custom-card p {
+    font-size: 1.1rem;
+    font-weight: 400;
+    color: var(--text-color);
+}
+
+.legal-analysis .custom-card h4 span,
+.legal-analysis .custom-card p span {
+    font-weight: 600;
+    color: var(--title-color);
+    margin-left: 8px;
+}
+
+.defenses-list h3.title {
+    margin-top: 30px;
+    font-size: 1.3rem;
+    font-weight: 600;
+    position: relative;
+    margin-bottom: 10px;
+    border-top: 2px solid #3b3b3b15;
+    padding-top: 20px;
+}
+
+.defenses-list h3.title sup {
+    margin: 0 3px;
+    font-size: 1.3rem;
+    font-weight: bold;
+    color: var(--main-color);
+}
+
+.defenses-list .custom-card {
+    min-height: 250px;
+}

@@ -1,0 +1,90 @@
+.case-analysis .start-analysis-box {
+    width: 95%;
+    height: 47vh;
+    background: var(--linear-color);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    border-radius: var(--lg-radius);
+    border: 2px dashed #EF950A40;
+    text-align: center;
+}
+
+.case-analysis .start-analysis-box img {
+    width: 30px;
+}
+
+.case-analysis .start-analysis-box h2 {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: var(--title-color);
+    margin: 12px 0;
+}
+
+.case-analysis .start-analysis-box p {
+    font-size: 1rem;
+    color: var(--text-color);
+}
+
+.case-analysis .start-analysis-box a {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 8px 25px;
+    background-color: var(--main-color);
+    border-radius: var(--sm-radius);
+    color: #fff;
+    margin-top: 35px;
+}
+
+.case-analysis .start-analysis-box a img {
+    width: 23px;
+}
+
+
+/* =========================== */
+.case-summary .not-data {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    /* background-color: red; */
+    height: 60vh;
+}
+
+.case-summary .not-data img {
+    width: 35%;
+    height: 100%;
+    object-fit: contain;
+    transition: var(--transition);
+}
+
+@media (max-width:800px) {
+    .case-summary .not-data img {
+        width: 50%;
+    }
+}
+
+/* ============================
+    document-selection
+=============================== */
+
+.document-selection .title {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 5px;
+}
+
+.document-selection .title h3 {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: var(--title-color);
+}
+
+.document-selection .title p {
+    font-size: 16px;
+    color: var(--text-color);
+}

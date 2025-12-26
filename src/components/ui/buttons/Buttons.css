@@ -1,0 +1,52 @@
+.custom-button {
+    color: #fff;
+    width: 100%;
+}
+
+/* Custom Icon Button */
+.icon-button {
+    transition: var(--transition);
+}
+
+.icon-button.sm {
+    width: 40px;
+    height: 40px;
+}
+
+.icon-button.md {
+    width: 55px;
+    height: 55px;
+}
+
+.icon-button.lg {
+    width: 65px;
+    height: 65px;
+}
+
+.icon-button svg {
+    color: var(--title-color);
+    font-size: 2rem;
+}
+
+.icon-button.sm svg {
+    font-size: 1rem;
+}
+
+.icon-button.md svg {
+    font-size: 1.7rem;
+}
+
+.icon-button.lg svg {
+    font-size: 2.1rem;
+}
+
+@media (max-width:1000px) {
+    .icon-button {
+        width: 45px !important;
+        height: 45px !important;
+    }
+
+    .icon-button svg {
+        font-size: 1.5rem !important;
+    }
+}

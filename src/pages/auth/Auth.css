@@ -1,0 +1,52 @@
+.auth-layout {
+    width: 100%;
+    height: 100vh;
+    background-color: var(--light-color);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.auth-layout form {
+    width: 100%;
+    /* background-color: red; */
+}
+
+.auth-layout form h2 {
+    font-size: 2.2rem;
+    font-weight: 600;
+    text-align: center;
+    color: var(--title-color);
+    margin-bottom: 20px;
+}
+
+.auth-layout form h5 {
+    font-size: 1.2rem;
+    font-weight: 500;
+    color: var(--title-color);
+}
+
+.auth-layout form p {
+    font-size: 1rem;
+    color: var(--text-color);
+    text-align: center;
+}
+
+.auth-layout form p a {
+    color: var(--main-color);
+}
+
+.auth-layout form .forgot-password a {
+    color: var(--text-color);
+}
+
+.auth-layout form.forgot-password a.back-to-login{
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 1rem;
+    color: var(--text-color);
+    padding: 6px 12px;
+    background-color: #d4d4d448;
+    border-radius: var(--lg-radius);
+}

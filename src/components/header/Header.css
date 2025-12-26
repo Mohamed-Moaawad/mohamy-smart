@@ -1,0 +1,44 @@
+header {
+    /* background-color: red; */
+}
+header .logo{
+    display: none;
+}
+
+header .text {}
+
+header .text h3 {
+    font-size: 2rem;
+    font-weight: 400;
+    color: var(--title-color);
+    transition: var(--transition);
+}
+
+header .text p {
+    color: var(--text-color);
+    font-size: 1.2rem;
+    transition: var(--transition);
+}
+
+@media (max-width:1000px) {
+    header{
+        margin-top: 30px;
+    }
+    header .logo{
+        display: flex;
+    }
+    header .text h3 {
+        font-size: 1.7rem;
+    }
+    header .text p {
+        font-size: 1rem;
+    }
+}
+@media (max-width:991px) {
+    header .text h3 {
+        font-size: 1.5rem;
+    }
+    header .text p {
+        font-size: .8rem;
+    }
+}

@@ -1,0 +1,55 @@
+
+
+section.clients .warning-image{
+    width: 100%;
+    height: 50vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+section.clients .warning-image img{
+    width: 350px;
+}
+
+
+section.clients .card h3 {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: var(--title-color);
+}
+
+section.clients .card h5 {
+    font-size: .9rem;
+    font-weight: 500;
+    color: var(--title-color);
+    margin-top: 8px;
+}
+
+section.clients .card h6 {
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--title-color);
+    margin: 12px 0;
+}
+
+section.clients .card p,
+section.clients .card span {
+    font-size: 1rem;
+    color: var(--text-color);
+}
+
+section.clients .card h4 {
+    font-size: 1rem;
+    font-weight: 500;
+    color: var(--title-color);
+    margin-top: 12px;
+}
+
+section.clients .card a {
+    padding: 8px 16px;
+    background-color: var(--success-color);
+    color: #fff;
+    border-radius: var(--lg-radius);
+}
+

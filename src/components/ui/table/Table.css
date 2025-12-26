@@ -1,0 +1,12 @@
+.custom-table tr{
+    color: var(--text-color);
+}
+
+.custom-table tbody tr td{
+    padding: 0 !important;
+}
+
+.custom-table tbody tr td a{
+    padding: 16px 0 !important;
+    margin: 5px 0;
+}

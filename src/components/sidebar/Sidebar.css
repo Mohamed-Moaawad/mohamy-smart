@@ -1,0 +1,161 @@
+aside {
+    padding: 20px 10px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: 20px;
+    height: 100vh;
+    transition: var(--transition);
+}
+
+aside .logo {
+    /* width: ; */
+}
+
+aside .logo img {
+    width: 60px;
+}
+
+aside nav {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+aside nav ul,
+aside .actions {
+    width: 70px;
+    overflow: hidden;
+    transition: var(--transition);
+    border-radius: 35px;
+    /* width: unset; */
+    padding: 0 10px;
+}
+
+aside nav ul:nth-child(2) {
+    padding: 0 10px;
+}
+
+aside nav ul {
+    background-color: var(--white-color);
+}
+
+@media (min-width: 1000px) {
+
+    aside nav ul:hover,
+    aside .actions:hover {
+        width: 234.27px;
+    }
+}
+
+aside nav ul:nth-child(1) li {
+    margin: 15px 0;
+}
+
+aside nav ul li a,
+aside .actions a {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    font-size: 1.3rem;
+    font-weight: 500;
+    text-wrap: nowrap;
+    padding: 10px;
+    border-radius: 30px;
+    color: var(--title-color);
+    transition: var(--transition);
+}
+
+aside nav ul li a.active,
+aside nav ul li a:hover {
+    background-color: var(--title-color);
+    color: var(--white-color);
+}
+
+aside nav ul li a svg {
+    font-size: 1.8rem;
+}
+
+aside .actions a {
+    overflow: hidden;
+    background-color: var(--danger-color);
+    color: #fff;
+}
+
+aside .actions a svg {
+    color: #fff;
+}
+
+aside .drag-box {
+    position: absolute;
+    top: 100%;
+    left: 43.8%;
+    padding: 2px 34px;
+    background-color: #69686898;
+    cursor: grab;
+    border-bottom-left-radius: var(--sm-radius);
+    border-bottom-right-radius: var(--sm-radius);
+    display: none;
+}
+
+aside .drag-box svg {
+    font-size: 1.5rem;
+    color: #fff;
+}
+
+
+
+@media (max-width: 1000px) {
+    aside {
+        position: fixed;
+        left: 0;
+        top: 0%;
+        width: 100%;
+        height: 90vh;
+        background-color: #69686898;
+        align-items: center;
+        justify-content: center;
+        border-bottom-left-radius: var(--sm-radius);
+        border-bottom-right-radius: var(--sm-radius);
+    }
+
+    aside .drag-box {
+        display: flex;
+    }
+
+    aside .logo {
+        display: none;
+    }
+
+    aside nav,
+    aside .actions {
+        width: 50%;
+        display: flex;
+        justify-content: center;
+        padding: 0;
+    }
+
+    aside .actions a {
+        width: 100%;
+    }
+
+    aside nav ul {
+        width: 100%;
+    }
+}
+
+@media (max-width: 650px) {
+
+    aside nav,
+    aside .actions {
+        width: 80%;
+    }
+}
+
+@media (max-width: 400px) {
+
+    aside nav,
+    aside .actions {
+        width: 98%;
+    }
+}

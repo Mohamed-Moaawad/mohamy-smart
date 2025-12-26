@@ -1,0 +1,136 @@
+section.home .head {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30px;
+}
+
+section.home .head h3 {
+    font-size: 1.3rem;
+    font-weight: 500;
+    color: var(--main-color);
+}
+
+section.home .head .icon {
+    padding: 12px;
+    background-color: var(--opacity-color);
+    border-radius: 8px;
+    cursor: pointer;
+}
+
+section.home .head .icon svg {
+    color: var(--title-color);
+}
+
+
+section.home ul li .text h4 {
+    font-size: 1.1rem;
+    color: var(--title-color);
+    margin-bottom: 5px;
+}
+
+section.home ul li .text h6 {
+    font-size: 1rem;
+    color: var(--text-color);
+    margin-bottom: 5px;
+}
+
+section.home ul li span {
+    font-size: 1.1rem;
+    color: var(--text-color);
+}
+
+section.home .calendar-container {
+    background-color: var(--white-color);
+    /* background-color: red; */
+    border-radius: var(--sm-radius);
+    padding: var(--padding);
+}
+
+section.home .calendar-container .calendar-box {
+    background-color: var(--white-color);
+    box-shadow: none;
+}
+
+section.home .calendar-container .calendar-box div {
+    width: 100% !important;
+    overflow-x: auto;
+}
+
+section.home .calendar-container .calendar-box div::-webkit-scrollbar {
+    background-color: var(--opacity-color);
+    height: 5px;
+    border-radius: var(--sm-radius);
+}
+section.home .calendar-container .calendar-box div::-webkit-scrollbar-thumb {
+    background-color: var(--main-color);
+    border-radius: var(--sm-radius);
+}
+
+section.home .calendar-container .calendar-box div table tr td {
+    padding: 15px;
+}
+
+section.home .calendar-container .calendar-box div table thead tr th {
+    padding: 0 15px;
+    width: 62px;
+}
+
+section.home .today-appointments h3 {
+    font-size: 1.3rem;
+    font-weight: 500;
+    color: var(--title-color);
+}
+
+section.home .today-appointments a {
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--main-color);
+}
+
+section.home .today-appointments .appointment-card {
+    position: relative;
+    background-color: var(--second-color);
+    padding: var(--padding);
+    border-radius: var(--sm-radius);
+    overflow: hidden;
+}
+
+section.home .today-appointments .appointment-card::before {
+    content: '';
+    position: absolute;
+    width: 12px;
+    height: 100%;
+    background-color: #FFDAA7;
+    top: 0;
+    right: 0;
+}
+section.home .today-appointments .appointment-card:nth-child(3)::before {
+    background-color: #BEF0C7;
+}
+
+section.home .today-appointments .appointment-card .avatar {
+    width: 60px;
+}
+
+section.home .today-appointments .appointment-card .avatar img {
+    width: 100%;
+}
+
+section.home .today-appointments .appointment-card .text h4 {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #1B1B1B;
+}
+
+section.home .today-appointments .appointment-card .text p {
+    font-size: 1rem;
+    color: #1B1B1BA6;
+}
+
+section.home .today-appointments .appointment-card span {
+    width: 25px;
+    height: 25px;
+    background-color: #1B1B1BA6;
+    border-radius: 50%;
+}

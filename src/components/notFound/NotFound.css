@@ -1,0 +1,15 @@
+.not-found-image {
+    width: 100%;
+    height: 100%;
+}
+
+.not-found-image img {
+    width: 30%;
+    user-select: none;
+}
+
+
+p.not-found {
+    font-size: 22px;
+    color: var(--text-color);
+}
