@@ -21,6 +21,7 @@ const Documents = () => {
     const dispatch = useAppDispatch();
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { extractedText, loading } = useAppSelector((state) => state.ocr);
+    console.log(extractedText);
     const inputFileRef = useRef<HTMLInputElement | null>(null);
     //! كل صورة هيبقى ليها نص خاص بيها
     const [results, setResults] = useState<

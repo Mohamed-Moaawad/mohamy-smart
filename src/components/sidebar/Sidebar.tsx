@@ -139,7 +139,7 @@ const Sidebar = () => {
                 dragConstraints={{ top: 0, bottom: 0 }}
                 // dragConstraints={{ top: 0, bottom: window.innerHeight - 100 }}
                 dragElastic={0.05}
-                onDragEnd={(e, info) => {
+                onDragEnd={(_, info) => {
                     if (info.offset.y > 50) {
                         setOpen(true);
                     } else if (info.offset.y < -50) {

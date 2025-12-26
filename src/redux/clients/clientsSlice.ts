@@ -1,6 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
 import type { TClient, TLoading } from "../../types/types";
-import thunkGetAllClients from "./thunk/thunkGetAllclients";
+import thunkGetAllClients from "./thunk/thunkGetAllClients";
 
 type TInitialState = {
     clients: TClient[];

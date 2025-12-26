@@ -7,7 +7,7 @@ import CustomInput from '../../../components/ui/inputs/CustomInput';
 import CustomButton from '../../../components/ui/buttons/CustomButton';
 
 const ProfileComponent = () => {
-    const { user, loading } = useAppSelector(state => state.auth);
+    const { user, } = useAppSelector(state => state.auth);
 
     return (
         <div className='profile-component'>

@@ -26,7 +26,7 @@ const ChangePassword = () => {
                         text='حفظ المتغيرات'
                         radius='md'
                         size='lg'
-                        color='var(--main-color)'
+                        color='primary'
                     />
                 </div>
             </form>
