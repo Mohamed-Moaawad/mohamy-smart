@@ -1,4 +1,3 @@
-import React from 'react'
 import CustomInput from '../ui/inputs/CustomInput';
 import InputSelect from '../ui/inputs/InputSelect';
 import { Button, ModalFooter, Textarea } from '@heroui/react';

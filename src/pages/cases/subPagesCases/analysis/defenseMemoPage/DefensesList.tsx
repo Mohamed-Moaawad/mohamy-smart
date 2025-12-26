@@ -17,7 +17,7 @@ type TDefensesList = {
 }
 
 
-const DefensesList = ({ caseId, nextStep, finalFacts }: TDefensesList) => {
+const DefensesList = ({ caseId }: TDefensesList) => {
     const dispatch = useAppDispatch();
     const { defenses, loading } = useAppSelector((state) => state.analysis);
     const { factAnalysis } = useAppSelector((state) => state.analysis);
@@ -44,9 +44,9 @@ const DefensesList = ({ caseId, nextStep, finalFacts }: TDefensesList) => {
         }
     }
 
-    const generateDetailedExplanation = async () => {
-        
-    }
+    // const generateDetailedExplanation = async () => {
+
+    // }
 
 
     useEffect(() => {

@@ -11,13 +11,12 @@ import { Pagination, useDisclosure } from '@heroui/react';
 import { FiPlus } from 'react-icons/fi';
 import CustomModal from '../../components/ui/modal/CustomModal';
 import AddNewClientForm from '../../components/forms/AddNewClientForm';
-import { useAppDispatch, useAppSelector } from '../../hooks/reduxHooks';
+import { useAppSelector } from '../../hooks/reduxHooks';
 
 const Clients = () => {
     const { isOpen, onOpen, onOpenChange } = useDisclosure();
 
-    const dispatch = useAppDispatch();
-    const { clients, pageNumber, totalPages, totalRecords, loading } = useAppSelector((state) => state.clients);
+    const { clients, loading } = useAppSelector((state) => state.clients);
 
     return (
         <section className='clients'>
@@ -33,7 +32,7 @@ const Clients = () => {
                                 text='إضافة موكل جديد'
                                 startContent={<FiPlus />}
                                 size='md'
-                                color='var(--white-color)'
+                                color='primary'
                                 radius='full'
                                 onClick={onOpen}
                             />

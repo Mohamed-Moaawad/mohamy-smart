@@ -1,4 +1,3 @@
-import React from 'react'
 import Container from '../../components/ui/Container'
 import HeadTitle from '../../components/headTitle/HeadTitle'
 import SubTitle from '../../components/subTitle/SubTitle'
@@ -97,7 +96,7 @@ const LegalContracts = () => {
                                 type='button'
                                 text='إضافة العقد جديد'
                                 startContent={<FiPlus />}
-                                color='var(--white-color)'
+                                color='primary'
                                 radius='full'
                                 size='lg'
                                 onClick={onOpen}

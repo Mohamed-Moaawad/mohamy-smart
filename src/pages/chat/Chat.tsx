@@ -83,7 +83,7 @@ const Chat = () => {
                                 endContent={<VscSend className='rotate-180' size={20} />}
                                 size='md'
                                 radius='full'
-                                color='var(--main-color)'
+                                color='primary'
                             />
                         </div>
                     </form>

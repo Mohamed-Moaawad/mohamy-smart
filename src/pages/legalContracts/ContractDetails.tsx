@@ -1,4 +1,3 @@
-import React from 'react'
 import { useParams } from 'react-router-dom'
 import Container from '../../components/ui/Container';
 import HeadTitle from '../../components/headTitle/HeadTitle';
