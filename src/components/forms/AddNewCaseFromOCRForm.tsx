@@ -47,6 +47,7 @@ const AddNewCaseFromOCRForm = () => {
 
 
     useEffect(() => {
+        console.log(generatedCase);
         if (generatedCase) {
             setValue("caseTitle", generatedCase.title || "");
             setValue("caseNumber", generatedCase.number || "");

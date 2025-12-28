@@ -25,7 +25,7 @@ const Documents = () => {
     const inputFileRef = useRef<HTMLInputElement | null>(null);
     //! كل صورة هيبقى ليها نص خاص بيها
     const [results, setResults] = useState<
-        { file: File, imageUrl: string, text: string }[]
+        { file: File, imageUrl: string, text: string; fileType: string }[]
     >([]);
 
     const handleClick = () => {
@@ -39,11 +39,18 @@ const Documents = () => {
         if (selectedFiles.length === 0) return;
 
         // preview images
-        const previews = selectedFiles.map((file) => ({
-            file,
-            imageUrl: URL.createObjectURL(file),
-            text: "",
-        }));
+        const previews = selectedFiles.map((file) => {
+            const isImage = file.type.startsWith("image/");
+            const isPdf = file.type === "application/pdf";
+            return (
+                {
+                    file,
+                    imageUrl: URL.createObjectURL(file),
+                    text: "",
+                    fileType: isImage ? "image" : isPdf ? 'pdf' : 'other'
+                }
+            )
+        });
 
         setResults(previews);
 
@@ -109,7 +116,7 @@ const Documents = () => {
                     <div className="documents-box mt-4">
                         <input type="file"
                             ref={inputFileRef}
-                            accept=".pdf, .jpg, .jpeg, .png"
+                            accept=".pdf, .jpg, .jpeg, .png, .doc, .docx"
                             multiple
                             onChange={handleFileChange}
                         />
@@ -144,12 +151,22 @@ const Documents = () => {
                                 key={idx}
                                 className="document flex-col md:flex-row"
                             >
-                                <img
-                                    src={item.imageUrl}
-                                    alt={item.file.name}
-                                    className="w-full md:w-[50%]"
-                                />
+                                {item.fileType === 'image' ? (
+                                    <img
+                                        src={item.imageUrl}
+                                        alt={item.file.name}
+                                        className="w-full md:w-[50%]"
+                                    />
+                                ) : (
+                                    <div className='w-full md:w-[50%] flex justify-center'>
+                                        <img
+                                            src={'/images/doc_file.png'}
+                                            alt={item.file.name}
+                                            className="w-6/12"
+                                        />
+                                    </div>
 
+                                )}
                                 <div className='extracted-text w-full md:w-[50%]'>
                                     {loading === 'pending' ? (
                                         <Skeleton className="rounded-lg">
@@ -170,16 +187,18 @@ const Documents = () => {
                         ))}
 
                         <div className="flex justify-center">
-                            <CustomButton
-                                type='button'
-                                text={loading === "pending" ? "جارٍ الإنشاء..." : "تحليل المستند تفصيلياً وإنشاء قضية جديدة"}
-                                size="lg"
-                                radius="md"
-                                color="primary"
-                                onClick={() => getAllText()}
-                                isDisabled={loading === "pending"}
-                                startContent={<img src='/images/ai-icon-white.png' alt='icon' />}
-                            />
+                            <div className="w-full sm:w-6/12 lg:w-4/12">
+                                <CustomButton
+                                    type='button'
+                                    text={loading === "pending" ? "جارٍ الإنشاء..." : "تحليل المستند تفصيلياً وإنشاء قضية جديدة"}
+                                    size="lg"
+                                    radius="md"
+                                    color="primary"
+                                    onClick={() => getAllText()}
+                                    isDisabled={loading === "pending"}
+                                    startContent={<img src='/images/ai-icon-white.png' alt='icon' />}
+                                />
+                            </div>
                         </div>
                     </div>
                 )}

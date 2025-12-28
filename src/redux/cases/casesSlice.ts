@@ -86,6 +86,7 @@ const casesSlice = createSlice({
             .addCase(thunkGetAllCases.pending, (state) => {
                 state.loading = 'pending';
                 state.error = null;
+                state.cases = [];
             })
             .addCase(thunkGetAllCases.fulfilled, (state, action) => {
                 state.loading = 'succeeded';

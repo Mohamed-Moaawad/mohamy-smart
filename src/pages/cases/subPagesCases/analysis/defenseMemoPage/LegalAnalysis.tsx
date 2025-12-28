@@ -10,6 +10,7 @@ import toast from 'react-hot-toast';
 import thunkFactAnalysis from '../../../../../redux/analysis/thunk/thunkFactAnalysis';
 import thunkGenerateDefenses from '../../../../../redux/analysis/thunk/thunkGenerateDefenses';
 import SkeletonCardsList from '../../../../../components/skeleton/SkeletonCardsList';
+import CustomTextarea from '../../../../../components/ui/inputs/CustomTextArea';
 
 
 type TLegalAnalysis = {
@@ -20,9 +21,10 @@ type TLegalAnalysis = {
 
 
 const LegalAnalysis = ({ finalFacts, nextStep, caseId }: TLegalAnalysis) => {
+
     const dispatch = useAppDispatch();
     const { factAnalysis, loading } = useAppSelector((state) => state.analysis);
-
+    const [analysisText, setAnalysisText] = useState<string>('');
 
     const [isLoading, setIsLoading] = useState<boolean>(false);
 
@@ -46,7 +48,7 @@ const LegalAnalysis = ({ finalFacts, nextStep, caseId }: TLegalAnalysis) => {
         if (caseId && factAnalysis) {
             setIsLoading(true);
             const loadingToast = toast.loading('جاري إنشاء الدفوع...');
-            await dispatch(thunkGenerateDefenses({ caseId, legalAnalysisText: factAnalysis.description })).unwrap()
+            await dispatch(thunkGenerateDefenses({ caseId, legalAnalysisText: factAnalysis })).unwrap()
                 .then(() => {
                     toast.success('تم إنشاء الدفوع');
                     nextStep();
@@ -60,6 +62,9 @@ const LegalAnalysis = ({ finalFacts, nextStep, caseId }: TLegalAnalysis) => {
     }
 
     useEffect(() => {
+        if (factAnalysis) {
+            setAnalysisText(factAnalysis)
+        }
         const handleBeforeUnload = (e: BeforeUnloadEvent) => {
             e.preventDefault();
             e.returnValue = "";
@@ -70,7 +75,7 @@ const LegalAnalysis = ({ finalFacts, nextStep, caseId }: TLegalAnalysis) => {
         return () => {
             window.removeEventListener("beforeunload", handleBeforeUnload);
         };
-    }, []);
+    }, [factAnalysis]);
 
     return (
         <div className='legal-analysis'>
@@ -102,24 +107,28 @@ const LegalAnalysis = ({ finalFacts, nextStep, caseId }: TLegalAnalysis) => {
                     <div className="w-full">
                         <h3>الواقعة القانونية</h3>
                         <CustomCard>
-                            <p>{factAnalysis.facts}</p>
+                            <p>{finalFacts}</p>
                         </CustomCard>
                     </div>
 
                     <div className="w-full mt-12">
                         <h3>التحليل القانوني المتقدم</h3>
                         <CustomCard>
-                            <h4><span>العنوان :</span> {factAnalysis.title}</h4>
-                            <h4><span>اسم الموكل :</span> {factAnalysis.clientName}</h4>
-                            <h4><span>النوع : </span>{factAnalysis.type}</h4>
-                            <p className='mt-5'><span>نتيجة التحليل :</span> {factAnalysis.description}</p>
+                            <CustomTextarea
+                                label='نتيجة التحليل'
+                                placeholder='نتيجة التحليل'
+                                variant='flat'
+                                value={analysisText}
+                                onChange={(e) => setAnalysisText(e.target.value)}
+                            />
                         </CustomCard>
                     </div>
 
                     <div className="w-full mt-12">
                         <h3>الملاحظات والتوصيات الإستراتيجية</h3>
                         <CustomCard>
-                            {factAnalysis.legalClaims}
+                            {/* {factAnalysis.legalClaims} */}
+                            dsdsd
                         </CustomCard>
                     </div>
 

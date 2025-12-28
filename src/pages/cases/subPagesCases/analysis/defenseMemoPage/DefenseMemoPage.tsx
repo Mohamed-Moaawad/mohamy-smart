@@ -7,6 +7,8 @@ import HeadTitle from "../../../../../components/headTitle/HeadTitle";
 import FactsReview from './FactsReview';
 import LegalAnalysis from './LegalAnalysis';
 import DefensesList from './DefensesList';
+import FinalRequirements from './FinalRequirements​';
+import FinalNote from './FinalNote';
 
 const DefenseMemoPage = () => {
     const [active, setActive] = useState(0);
@@ -19,6 +21,11 @@ const DefenseMemoPage = () => {
     const caseId = parts[2];
 
     const [finalFacts, setFinalFacts] = useState<string>('');
+    const [defensesWithDetailsList, setDefensesWithDetailsList] = useState<{
+        title: string;
+        detailsText: string;
+    }[]>([]);
+    const [pdf, setPdf] = useState<string>('');
 
     return (
         <section className="defense-memo">
@@ -40,13 +47,13 @@ const DefenseMemoPage = () => {
                             <LegalAnalysis finalFacts={finalFacts} nextStep={nextStep} caseId={caseId} />
                         </Stepper.Step>
                         <Stepper.Step label="قائمة الدفوع">
-                            <DefensesList caseId={caseId} finalFacts={finalFacts} nextStep={nextStep} />
+                            <DefensesList caseId={caseId} finalFacts={finalFacts} nextStep={nextStep} setDefensesWithDetailsList={setDefensesWithDetailsList} />
                         </Stepper.Step>
                         <Stepper.Step label="الطلبات الختامية">
-                            Step 4 content: Verify email
+                            <FinalRequirements caseId={caseId} finalFacts={finalFacts} nextStep={nextStep} defensesWithDetailsList={defensesWithDetailsList} setPdf={setPdf} />
                         </Stepper.Step>
                         <Stepper.Step label="المذكرة النهائية">
-                            Step 5 content: Verify email
+                            <FinalNote pdf={pdf} />
                         </Stepper.Step>
                         <Stepper.Step label="المناقشة القانونية">
                             Step 6 content: Get full access

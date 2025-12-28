@@ -90,7 +90,7 @@ const Cases = () => {
                         <SkeletonCards />
                     )}
 
-                    {cases.length === 0 && (
+                    {cases.length === 0 && loading === 'succeeded' && (
                         <NotFoundImage text='قائمة القضايا فارغة' />
                     )}
 
@@ -124,7 +124,7 @@ const Cases = () => {
                             initialPage={1}
                             page={pageNumber}
                             total={totalPages}
-                            onChange={() => setPageNumber(pageNumber + 1)}
+                            onChange={(page) => setPageNumber(page)}
                             color='primary'
                             className='cursor-pointer'
                         />

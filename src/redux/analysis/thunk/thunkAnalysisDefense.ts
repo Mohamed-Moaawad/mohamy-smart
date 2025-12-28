@@ -2,25 +2,20 @@ import { createAsyncThunk } from "@reduxjs/toolkit";
 import api from "../../../APIs/api";
 import axiosErrorHandler from "../../../utils/axiosErrorHandler";
 
-type TProps = {
-    caseId: string;
-    caseFacts: string;
-}
-
-const thunkFactAnalysis = createAsyncThunk('analysis/thunkFactAnalysis', async ({ caseId, caseFacts }: TProps, thunkAPI) => {
+const thunkAnalysisDefense = createAsyncThunk('analysis/thunkAnalysisDefense', async ({ defenseTitle, caseId, factsText }: { defenseTitle: string; caseId: string; factsText: string; }, thunkAPI) => {
     const { rejectWithValue } = thunkAPI;
     try {
-        const res = await api.post(`SmartAnalysis/legal-analysis`,
+        const res = await api.post(`SmartAnalysis/analyze-defense`,
             {
                 caseId,
-                caseFacts
+                defenseTitle,
+                factsText,
             }
         );
-
         return res.data.data;
     } catch (error) {
         return rejectWithValue(axiosErrorHandler(error));
     }
 });
 
-export default thunkFactAnalysis;
+export default thunkAnalysisDefense;

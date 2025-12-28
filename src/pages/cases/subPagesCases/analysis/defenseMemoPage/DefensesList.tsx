@@ -1,4 +1,5 @@
-import { IoAdd, IoReload } from "react-icons/io5"
+import './DefenseMemoPage.css';
+import { IoAdd, IoArrowBackOutline, IoReload } from "react-icons/io5"
 import { useEffect, useState } from "react";
 import SubTitle from "../../../../../components/subTitle/SubTitle"
 import CustomButton from "../../../../../components/ui/buttons/CustomButton"
@@ -9,30 +10,42 @@ import SkeletonCards from "../../../../../components/skeleton/SkeletonCards"
 import NotFoundImage from "../../../../../components/notFound/NotFoundImage"
 import toast from "react-hot-toast";
 import thunkGenerateDefenses from "../../../../../redux/analysis/thunk/thunkGenerateDefenses";
+import { useDisclosure } from '@heroui/react';
+import CustomModal from '../../../../../components/ui/modal/CustomModal';
+// import AddNewDefense from '../../../../../components/forms/AddNewDefense';
+import thunkAnalysisDefense from '../../../../../redux/analysis/thunk/thunkAnalysisDefense';
+import thunkFinalRequirements from '../../../../../redux/analysis/thunk/thunkFinalRequirements​';
+import CustomTextarea from '../../../../../components/ui/inputs/CustomTextArea';
 
 type TDefensesList = {
+    caseId: string;
     finalFacts: string;
     nextStep: () => void;
-    caseId: string;
+    setDefensesWithDetailsList: React.Dispatch<React.SetStateAction<{ title: string; detailsText: string }[]>>;
+}
+
+type TAllDefensesList = {
+    evidentiaryDefenses: string[];
+    proceduralDefenses: string[];
+    substantiveDefenses: string[];
 }
 
 
-const DefensesList = ({ caseId }: TDefensesList) => {
+const DefensesList = ({ caseId, finalFacts, nextStep, setDefensesWithDetailsList }: TDefensesList) => {
+    const { isOpen, onOpen, onOpenChange } = useDisclosure();
     const dispatch = useAppDispatch();
-    const { defenses, loading } = useAppSelector((state) => state.analysis);
-    const { factAnalysis } = useAppSelector((state) => state.analysis);
+    const { defenses, factAnalysis, analysisDefenses, loading } = useAppSelector((state) => state.analysis);
+    const [allDefensesList, setAllDefensesList] = useState<TAllDefensesList | null>(null);
 
-    console.log(defenses);
+
+
     const [isLoading, setIsLoading] = useState<boolean>(false);
 
     const reGenerateDefenses = async () => {
-        console.log(caseId)
-        console.log(factAnalysis)
         if (caseId && factAnalysis) {
-            console.log(2)
             const loadingToast = toast.loading('جاري إنشاء الدفوع...');
             setIsLoading(true);
-            await dispatch(thunkGenerateDefenses({ caseId, legalAnalysisText: factAnalysis.description })).unwrap()
+            await dispatch(thunkGenerateDefenses({ caseId, legalAnalysisText: factAnalysis })).unwrap()
                 .then(() => {
                     toast.success('تم إنشاء الدفوع');
                 }).catch((error) => {
@@ -44,12 +57,47 @@ const DefensesList = ({ caseId }: TDefensesList) => {
         }
     }
 
-    // const generateDetailedExplanation = async () => {
 
-    // }
+    // 🟢 state نخزن فيه الشرح لكل عنصر باستخدام index
+    // مثال: { 0: "شرح أول دفاع", 1: "شرح ثاني دفاع" }
+    const [explanations, setExplanations] = useState<Record<string, string>>({});
+    // 🟢 نعرف أنهي كارد حالياً بيعمل loading
+    const [loadingKey, setLoadingKey] = useState<string | null>(null);
+
+    const generateDetailedExplanation = async (defenseTitle: string, key: string) => {
+        setLoadingKey(key);
+        setIsLoading(true);
+        const loadingToast = toast.loading('جاري شرح الدافع...');
+        console.log(key)
+        console.log(defenseTitle)
+        await dispatch(thunkAnalysisDefense({ defenseTitle, caseId, factsText: finalFacts })).unwrap()
+            .then((textExplanation) => {
+                toast.success('تم شرح الدافع');
+                // نخزن الشرح في نفس index بتاع النص
+                setExplanations(prev => ({
+                    ...prev,
+                    [key]: textExplanation.memorandumText
+                }));
+            }).catch((error) => {
+                toast.error(`حدث خطأ: ${error}`)
+            }).finally(() => {
+                toast.dismiss(loadingToast);
+                setLoadingKey(null);
+                setIsLoading(false);
+            })
+        setIsLoading(false);
+    }
+
 
 
     useEffect(() => {
+        if (defenses) {
+            setAllDefensesList({
+                evidentiaryDefenses: defenses.evidentiaryDefenses,
+                proceduralDefenses: defenses.proceduralDefenses,
+                substantiveDefenses: defenses.substantiveDefenses,
+            })
+        }
         const handleBeforeUnload = (e: BeforeUnloadEvent) => {
             e.preventDefault();
             e.returnValue = "";
@@ -60,7 +108,77 @@ const DefensesList = ({ caseId }: TDefensesList) => {
         return () => {
             window.removeEventListener("beforeunload", handleBeforeUnload);
         };
-    }, []);
+    }, [defenses]);
+
+
+    const [selectedDefensesList, setSelectedDefensesList] = useState<string[]>([])
+    const addDefenses = (item: string) => {
+        setSelectedDefensesList((prev) => {
+            if (prev.includes(item)) {
+                // 🗑️ امسحها
+                return prev.filter((Defense) => Defense !== item);
+            } else {
+                // ➕ ضيفها
+                return [...prev, item];
+            }
+        });
+    }
+
+
+    // ===========================================
+    // ===========================================
+    const findDefenseKeyByTitle = (title: string): string | null => {
+        const proceduralIndex = allDefensesList?.proceduralDefenses.indexOf(title);
+        if (proceduralIndex !== -1 && proceduralIndex !== undefined) {
+            return `procedural-${proceduralIndex}`;
+        }
+
+        const substantiveIndex = allDefensesList?.substantiveDefenses.indexOf(title);
+        if (substantiveIndex !== -1 && substantiveIndex !== undefined) {
+            return `substantive-${substantiveIndex}`;
+        }
+
+        const evidentiaryIndex = allDefensesList?.evidentiaryDefenses.indexOf(title);
+        if (evidentiaryIndex !== -1 && evidentiaryIndex !== undefined) {
+            return `evidentiary-${evidentiaryIndex}`;
+        }
+        return null;
+    };
+
+    const buildSelectedDefensesWithExplanation = () => {
+        return selectedDefensesList.map((defenseTitle) => {
+            const key = findDefenseKeyByTitle(defenseTitle);
+
+            return {
+                title: defenseTitle,
+                detailsText: key ? explanations[key] || "" : ""
+            };
+        });
+    };
+    // ===========================================
+    // ===========================================
+
+
+
+    const sendData = async () => {
+        const list = buildSelectedDefensesWithExplanation();
+        setDefensesWithDetailsList(list);
+
+        setIsLoading(true);
+
+        const loadingToast = toast.loading('جاري إنشاء الطلبات الختامية...');
+        await dispatch(thunkFinalRequirements({ caseId, factsMap: [finalFacts], defensesMap: selectedDefensesList, optionalLegalReferences: null })).unwrap()
+            .then(() => {
+                toast.success('تم إنشاء الطلبات الختامية');
+                nextStep();
+            }).catch((error) => {
+                toast.error(`حدث خطأ: ${error}`)
+            }).finally(() => {
+                toast.dismiss(loadingToast);
+            })
+        setIsLoading(false);
+    }
+
 
     return (
         <div className="defenses-list">
@@ -83,13 +201,13 @@ const DefensesList = ({ caseId }: TDefensesList) => {
                         <div>
                             <CustomButton
                                 type="button"
-                                text='انشاء دافع'
+                                text='إنشاء دافع'
                                 radius="full"
                                 size="md"
                                 startContent={<IoAdd />}
-                            // isDisabled={isLoading}
-                            // isLoading={isLoading}
-                            // onClick={reAnalysis}
+                                // isDisabled={isLoading}
+                                // isLoading={isLoading}
+                                onClick={onOpen}
                             />
                         </div>
                     </div>
@@ -100,104 +218,177 @@ const DefensesList = ({ caseId }: TDefensesList) => {
                 <SkeletonCards />
             )}
 
-            {defenses && loading === 'succeeded' && (
+            {allDefensesList && loading === 'succeeded' && (
                 <div className="w-full flex flex-wrap">
-                    <h3 className="w-full text-center title"><sup>"</sup>دفوع شكلية<sup>"</sup></h3>
-                    {defenses.proceduralDefenses.map((item, idx) => (
-                        <div key={idx} className="w-full sm:w-6/12 md:w-6/12 lg:w-3/12  p-3">
-                            <CustomCard>
-                                <div className="head-card mb-5">
-                                    <div className="icon">
-                                        <MdDone />
+                    <h3 className="w-full title">دفوع شكلية : </h3>
+                    {allDefensesList.proceduralDefenses.map((item, idx) => {
+                        const key = `procedural-${idx}`;
+                        return (
+                            <div key={idx} className="w-full sm:w-6/12 md:w-6/12 lg:w-4/12  p-3">
+                                <CustomCard
+                                    onClick={() => addDefenses(item)}
+                                >
+                                    <div className="head-card mb-5">
+                                        <div className={`icon ${selectedDefensesList.includes(item) && 'selected'}`}>
+                                            {selectedDefensesList.includes(item) && <MdDone />}
+                                        </div>
+                                        <span>الدفع {idx + 1}</span>
                                     </div>
-                                    <span>الدفع {idx + 1}</span>
-                                </div>
-                                {/* <div className="w-full flex gap-5 types">
-                                    <div>اجرائئ</div>
-                                    <div className={`bg-[red]`}>متوسط</div>
-                                </div> */}
-                                <h5 className="defense">{item}</h5>
-                                <div className="flex justify-end">
-                                    <div className="w-full sm:w-6/12 md:w-">
-                                        <CustomButton
-                                            type="button"
-                                            text="شرح تفصيلي"
-                                            size="md"
-                                            radius="full"
-                                            startContent={<img src="../../../../../../public/images/ai-icon-white.png" alt="icon" />}
-                                        />
-                                    </div>
-                                </div>
-                            </CustomCard>
-                        </div>
-                    ))}
 
-                    <h3 className="w-full text-center title"><sup>"</sup>دفوع موضوعية<sup>"</sup></h3>
-                    {defenses.substantiveDefenses.map((item, idx) => (
-                        <div key={idx} className="w-full sm:w-6/12 md:w-6/12 lg:w-3/12  p-3">
-                            <CustomCard>
-                                <div className="head-card mb-5">
-                                    <div className="icon">
-                                        <MdDone />
-                                    </div>
-                                    <span>الدفع {idx + 1}</span>
-                                </div>
-                                {/* <div className="w-full flex gap-5 types">
-                                   <div>اجرائئ</div>
-                                   <div className={`bg-[red]`}>متوسط</div>
-                               </div> */}
-                                <h5 className="defense">{item}</h5>
-                                <div className="flex justify-end">
-                                    <div className="w-full sm:w-6/12 md:w-">
-                                        <CustomButton
-                                            type="button"
-                                            text="شرح تفصيلي"
-                                            size="md"
-                                            radius="full"
-                                            startContent={<img src="../../../../../../public/images/ai-icon-white.png" alt="icon" />}
-                                        />
-                                    </div>
-                                </div>
-                            </CustomCard>
-                        </div>
-                    ))}
+                                    <h5 className="defense">{item}</h5>
 
-                    <h3 className="w-full text-center title"><sup>"</sup>دفوع موضوعية بالأدلة<sup>"</sup></h3>
-                    {defenses.evidentiaryDefenses.map((item, idx) => (
-                        <div key={idx} className="w-full sm:w-6/12 md:w-6/12 lg:w-3/12  p-3">
-                            <CustomCard>
-                                <div className="head-card mb-5">
-                                    <div className="icon">
-                                        <MdDone />
+                                    {explanations[key] && (
+                                        <div className='overflow-y-auto mb-4'>
+                                            <CustomTextarea
+                                                label=''
+                                                placeholder=''
+                                                variant='flat'
+                                                value={explanations[key]}
+                                                readOnly
+                                            />
+                                        </div>
+                                    )}
+                                    <div className="flex justify-end">
+                                        <div className="w-full sm:w-6/12 md:w-">
+                                            <CustomButton
+                                                type="button"
+                                                text={loadingKey === key ? 'جاري شرح الدافع' : "شرح تفصيلي"}
+                                                size="md"
+                                                radius="full"
+                                                startContent={<img src="../../../../../../public/images/ai-icon-white.png" alt="icon" />}
+                                                onClick={() => generateDetailedExplanation(item, key)}
+                                            />
+                                        </div>
                                     </div>
-                                    <span>الدفع {idx + 1}</span>
-                                </div>
-                                {/* <div className="w-full flex gap-5 types">
-                                   <div>اجرائئ</div>
-                                   <div className={`bg-[red]`}>متوسط</div>
-                               </div> */}
-                                <h5 className="defense">{item}</h5>
-                                <div className="flex justify-end">
-                                    <div className="w-full sm:w-6/12 md:w-">
-                                        <CustomButton
-                                            type="button"
-                                            text="شرح تفصيلي"
-                                            size="md"
-                                            radius="full"
-                                            startContent={<img src="../../../../../../public/images/ai-icon-white.png" alt="icon" />}
-                                        />
+                                </CustomCard>
+                            </div>
+                        )
+                    })}
+
+                    <h3 className="w-full title">دفوع موضوعية : </h3>
+                    {allDefensesList.substantiveDefenses.map((item, idx) => {
+                        const key = `substantive-${idx}`;
+                        return (
+                            <div key={idx} className="w-full sm:w-6/12 md:w-6/12 lg:w-4/12  p-3">
+                                <CustomCard
+                                    onClick={() => addDefenses(item)}
+                                >
+                                    <div className="head-card mb-5">
+                                        <div className={`icon ${selectedDefensesList.includes(item) && 'selected'}`}>
+                                            {selectedDefensesList.includes(item) && <MdDone />}
+                                        </div>
+                                        <span>الدفع {idx + 1}</span>
                                     </div>
-                                </div>
-                            </CustomCard>
+
+                                    <h5 className="defense">{item}</h5>
+
+                                    {explanations[key] && (
+                                        <div className='overflow-y-auto mb-4'>
+                                            <CustomTextarea
+                                                label=''
+                                                placeholder=''
+                                                variant='flat'
+                                                value={explanations[key]}
+                                                readOnly
+                                            />
+                                        </div>
+                                    )}
+
+                                    <div className="flex justify-end">
+                                        <div className="w-full sm:w-6/12 md:w-">
+                                            <CustomButton
+                                                type="button"
+                                                text={loadingKey === key ? 'جاري شرح الدافع' : "شرح تفصيلي"}
+                                                size="md"
+                                                radius="full"
+                                                startContent={<img src="../../../../../../public/images/ai-icon-white.png" alt="icon" />}
+                                                onClick={() => generateDetailedExplanation(item, key)}
+                                            />
+                                        </div>
+                                    </div>
+
+                                </CustomCard>
+                            </div>
+                        )
+                    })}
+
+                    <h3 className="w-full title">دفوع موضوعية بالأدلة : </h3>
+                    {allDefensesList.evidentiaryDefenses.map((item, idx) => {
+                        const key = `evidentiary-${idx}`;
+                        return (
+                            <div key={idx} className="w-full sm:w-6/12 md:w-6/12 lg:w-4/12  p-3">
+                                <CustomCard
+                                    onClick={() => addDefenses(item)}
+                                >
+                                    <div className="head-card mb-5">
+                                        <div className={`icon ${selectedDefensesList.includes(item) && 'selected'}`}>
+                                            {selectedDefensesList.includes(item) && <MdDone />}
+                                        </div>
+                                        <span>الدفع {idx + 1}</span>
+                                    </div>
+
+                                    <h5 className="defense">{item}</h5>
+
+                                    {explanations[key] && (
+                                        <div className='overflow-y-auto mb-4'>
+                                            <CustomTextarea
+                                                label=''
+                                                placeholder=''
+                                                variant='flat'
+                                                value={explanations[key]}
+                                                readOnly
+                                            />
+                                        </div>
+                                    )}
+
+                                    <div className="flex justify-end">
+                                        <div className="w-full sm:w-6/12 md:w-">
+                                            <CustomButton
+                                                type="button"
+                                                text={loadingKey === key ? 'جاري شرح الدافع' : "شرح تفصيلي"}
+                                                size="md"
+                                                radius="full"
+                                                startContent={<img src="../../../../../../public/images/ai-icon-white.png" alt="icon" />}
+                                                onClick={() => generateDetailedExplanation(item, key)}
+                                            />
+                                        </div>
+                                    </div>
+                                </CustomCard>
+                            </div>
+                        )
+                    })}
+
+                    <div className="w-full flex justify-end mt-10">
+                        <div className="w-full sm:w-6/12 md:w-4/12 lg:w-3/12">
+                            <CustomButton
+                                type='button'
+                                text={isLoading ? 'جاري توليد الطلبات الختامية' : 'الطلبات الختامية'}
+                                size='md'
+                                radius='md'
+                                endContent={!isLoading && <IoArrowBackOutline />}
+                                isLoading={isLoading}
+                                onClick={sendData}
+                            />
                         </div>
-                    ))}
+                    </div>
                 </div>
             )}
-            {!defenses && loading === 'succeeded' && (
+            {!allDefensesList && loading === 'succeeded' && (
                 <NotFoundImage text="لا توجد دفوع. يجيب إعاجة المحاولة" />
             )}
-        </div>
-    )
-}
 
-export default DefensesList
+            {/* <CustomModal isOpen={isOpen} onOpenChange={onOpenChange} size='lg' title='شرح الدافع' >
+                <AddNewDefense
+                    allDefensesList={allDefensesList}
+                    setAllDefensesList={setAllDefensesList}
+                    onOpenChange={onOpenChange}
+                />
+                <p className='max-h-[60vh] overflow-y-auto'>
+                    {analysisDefenses?.memorandumText}
+                </p>
+            </CustomModal> */}
+        </div>
+    );
+};
+
+export default DefensesList;

@@ -73,6 +73,11 @@ api.interceptors.response.use(
             }
         }
 
+        if (error.response.status === 403) {
+            removeTokens()
+            window.location.href = "/login";
+        }
+
         return Promise.reject(error);
     }
 );

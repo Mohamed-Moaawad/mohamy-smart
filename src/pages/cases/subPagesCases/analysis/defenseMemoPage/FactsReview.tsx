@@ -6,13 +6,11 @@ import CustomButton from "../../../../../components/ui/buttons/CustomButton";
 import CustomCard from "../../../../../components/ui/card/CustomCard";
 import { MdDone } from "react-icons/md";
 import CustomModal from '../../../../../components/ui/modal/CustomModal';
-import { ModalFooter, Textarea, useDisclosure } from '@heroui/react';
-import { addNewFactSchema, type addNewFactSchemaType } from '../../../../../validations/addNewFactSchema';
-import { useForm, type SubmitHandler } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
 import { useAppDispatch } from '../../../../../hooks/reduxHooks';
 import thunkFactAnalysis from '../../../../../redux/analysis/thunk/thunkFactAnalysis';
 import toast from 'react-hot-toast';
+import AddNewFact from '../../../../../components/forms/AddNewFact';
+import { useDisclosure } from '@heroui/react';
 
 
 type TFactsReview = {
@@ -23,21 +21,12 @@ type TFactsReview = {
 }
 
 const FactsReview = ({ facts, nextStep, setFinalFacts, caseId }: TFactsReview) => {
-
-
     const { isOpen, onOpen, onOpenChange } = useDisclosure();
 
     const [caseFacts, setCaseFacts] = useState<string[]>([facts]);
+    const [selectedFacts, setSelectedFacts] = useState<string[]>([facts]);
 
-    const { register, handleSubmit, reset, formState: { errors } } = useForm<addNewFactSchemaType>({
-        mode: 'onChange',
-        resolver: zodResolver(addNewFactSchema),
-    });
-    const onSubmit: SubmitHandler<addNewFactSchemaType> = (data) => {
-        setCaseFacts([...caseFacts, data.fact])
-        reset();
-        onOpenChange();
-    }
+
 
     const dispatch = useAppDispatch();
     const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -46,12 +35,10 @@ const FactsReview = ({ facts, nextStep, setFinalFacts, caseId }: TFactsReview) =
         const loadingToast = toast.loading('جاري تحليل الوقائع...');
         setIsLoading(true);
 
-        const factsText = caseFacts.join('')
-        setFinalFacts(factsText);
-
-
+        const factsText = selectedFacts.join('')
         await dispatch(thunkFactAnalysis({ caseId, caseFacts: factsText })).unwrap()
             .then(() => {
+                setFinalFacts(factsText);
                 toast.success('تم تحليل الوقائع');
                 nextStep();
             }).catch((error) => {
@@ -76,7 +63,18 @@ const FactsReview = ({ facts, nextStep, setFinalFacts, caseId }: TFactsReview) =
         };
     }, []);
 
-
+    const toggleFact = (item: string) => {
+        setSelectedFacts((prev) => {
+            if (prev.includes(item)) {
+                // 🗑️ امسحها
+                return prev.filter((fact) => fact !== item);
+            } else {
+                // ➕ ضيفها
+                return [...prev, item];
+            }
+        });
+        console.log(selectedFacts);
+    }
 
     return (
         <div className="facts-page w-full mt-10">
@@ -98,11 +96,13 @@ const FactsReview = ({ facts, nextStep, setFinalFacts, caseId }: TFactsReview) =
             />
             <div className="flex flex-wrap mt-5">
                 {caseFacts.map((fact, idx) => (
-                    <div key={fact} className="w-full sm:w-6/12 md:w-4/12 lg:w-3/12 p-1">
-                        <CustomCard>
+                    <div key={idx} className="w-full sm:w-6/12 md:w-4/12 lg:w-3/12 p-1">
+                        <CustomCard
+                            onClick={() => toggleFact(fact)}
+                        >
                             <div className="head-card mb-5">
-                                <div className="icon">
-                                    <MdDone />
+                                <div className={`icon ${selectedFacts.includes(fact) && 'selected'}`}>
+                                    {selectedFacts.includes(fact) && <MdDone />}
                                 </div>
                                 <span>الواقعة {idx + 1}</span>
                             </div>
@@ -128,42 +128,7 @@ const FactsReview = ({ facts, nextStep, setFinalFacts, caseId }: TFactsReview) =
 
             <CustomModal isOpen={isOpen} onOpenChange={onOpenChange} size='xl' title='إضافة وقائع جديد'>
                 <div className="w-full">
-                    <form onSubmit={handleSubmit(onSubmit)}>
-                        <Textarea
-                            disableAnimation
-                            disableAutosize
-                            classNames={{
-                                base: "w-full",
-                                input: "resize-y min-h-[80px]",
-                            }}
-                            label="وقائع القضية"
-                            placeholder="وقائع القضية"
-                            variant="flat"
-                            isInvalid={!!errors.fact}
-                            errorMessage={errors.fact?.message}
-                            {...register('fact')}
-                        />
-
-                        <ModalFooter className="w-full mt-5 px-0">
-                            <div className='w-6/12'>
-                                <CustomButton
-                                    type='reset'
-                                    text='حذف'
-                                    size='md'
-                                    radius='full'
-                                    color='danger'
-                                />
-                            </div>
-                            <div className="w-6/12">
-                                <CustomButton
-                                    type='submit'
-                                    text='اضافة'
-                                    size='md'
-                                    radius='full'
-                                />
-                            </div>
-                        </ModalFooter>
-                    </form>
+                    <AddNewFact setCaseFacts={setCaseFacts} caseFacts={caseFacts} onOpenChange={onOpenChange} />
                 </div>
             </CustomModal>
         </div>

@@ -29,7 +29,15 @@
     display: flex;
     justify-content: center;
     align-items: center;
+    border: 1px solid var(--success-color);
+    /* background-color: var(--success-color); */
+}
+
+.defense-memo .head-card .icon.selected {
     background-color: var(--success-color);
+}
+
+.defense-memo .head-card .icon svg {
     color: #fff;
 }
 
@@ -38,6 +46,10 @@
     background-color: var(--success-color);
     color: #fff;
     border-radius: var(--lg-radius);
+}
+
+.defense-memo .custom-card {
+    cursor: pointer;
 }
 
 .defense-memo .custom-card p {
@@ -81,18 +93,11 @@
     color: var(--text-color);
 }
 
-.legal-analysis .custom-card h4,
-.legal-analysis .custom-card p {
+.legal-analysis .custom-card textarea {
     font-size: 1.1rem;
     font-weight: 400;
     color: var(--text-color);
-}
-
-.legal-analysis .custom-card h4 span,
-.legal-analysis .custom-card p span {
-    font-weight: 600;
-    color: var(--title-color);
-    margin-left: 8px;
+    min-height: 200px;
 }
 
 .defenses-list h3.title {
@@ -105,13 +110,9 @@
     padding-top: 20px;
 }
 
-.defenses-list h3.title sup {
-    margin: 0 3px;
-    font-size: 1.3rem;
-    font-weight: bold;
-    color: var(--main-color);
-}
 
-.defenses-list .custom-card {
+.defenses-list .custom-card,
+.final-requirements .custom-card {
     min-height: 250px;
 }
+
