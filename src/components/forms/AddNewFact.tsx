@@ -1,7 +1,7 @@
 import { addNewFactSchema, type addNewFactSchemaType } from '../../validations/addNewFactSchema';
 import { useForm, type SubmitHandler } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import CustomTextarea from '../ui/inputs/CustomTextArea';
+import CustomTextarea from '../ui/inputs/CustomTextarea';
 import { ModalFooter } from '@heroui/react';
 import CustomButton from '../ui/buttons/CustomButton';
 

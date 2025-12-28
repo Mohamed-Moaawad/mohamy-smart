@@ -10,7 +10,7 @@ import toast from 'react-hot-toast';
 import thunkFactAnalysis from '../../../../../redux/analysis/thunk/thunkFactAnalysis';
 import thunkGenerateDefenses from '../../../../../redux/analysis/thunk/thunkGenerateDefenses';
 import SkeletonCardsList from '../../../../../components/skeleton/SkeletonCardsList';
-import CustomTextarea from '../../../../../components/ui/inputs/CustomTextArea';
+import CustomTextarea from '../../../../../components/ui/inputs/CustomTextarea';
 
 
 type TLegalAnalysis = {

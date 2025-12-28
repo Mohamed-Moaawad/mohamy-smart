@@ -11,11 +11,11 @@ import NotFoundImage from "../../../../../components/notFound/NotFoundImage"
 import toast from "react-hot-toast";
 import thunkGenerateDefenses from "../../../../../redux/analysis/thunk/thunkGenerateDefenses";
 import { useDisclosure } from '@heroui/react';
-import CustomModal from '../../../../../components/ui/modal/CustomModal';
+// import CustomModal from '../../../../../components/ui/modal/CustomModal';
 // import AddNewDefense from '../../../../../components/forms/AddNewDefense';
 import thunkAnalysisDefense from '../../../../../redux/analysis/thunk/thunkAnalysisDefense';
 import thunkFinalRequirements from '../../../../../redux/analysis/thunk/thunkFinalRequirements​';
-import CustomTextarea from '../../../../../components/ui/inputs/CustomTextArea';
+import CustomTextarea from '../../../../../components/ui/inputs/CustomTextarea';
 
 type TDefensesList = {
     caseId: string;
@@ -32,9 +32,9 @@ type TAllDefensesList = {
 
 
 const DefensesList = ({ caseId, finalFacts, nextStep, setDefensesWithDetailsList }: TDefensesList) => {
-    const { isOpen, onOpen, onOpenChange } = useDisclosure();
+    const { onOpen, } = useDisclosure();
     const dispatch = useAppDispatch();
-    const { defenses, factAnalysis, analysisDefenses, loading } = useAppSelector((state) => state.analysis);
+    const { defenses, factAnalysis, loading } = useAppSelector((state) => state.analysis);
     const [allDefensesList, setAllDefensesList] = useState<TAllDefensesList | null>(null);
 
 

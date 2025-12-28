@@ -4,7 +4,6 @@ import CustomButton from "../../../../../components/ui/buttons/CustomButton"
 import { useAppSelector } from "../../../../../hooks/reduxHooks";
 import { Skeleton } from "@heroui/react";
 import NotFoundImage from "../../../../../components/notFound/NotFoundImage";
-import CustomTextarea from "../../../../../components/ui/inputs/CustomTextArea";
 import CustomCard from "../../../../../components/ui/card/CustomCard";
 
 type TFinalNote = {

@@ -19,9 +19,9 @@ type TFinalRequirements = {
         title: string;
         detailsText: string;
     }[];
-    setPdf: React.Dispatch<React.SetStateAction<string | null>>;
+    setPdf: React.Dispatch<React.SetStateAction<string>>;
 }
-const FinalRequirements = ({ caseId, finalFacts, nextStep, defensesWithDetailsList, setPdf }: TFinalRequirements) => {
+const FinalRequirements = ({ caseId, nextStep, defensesWithDetailsList, setPdf }: TFinalRequirements) => {
     const dispatch = useAppDispatch();
     const { finalRequirements, factAnalysis, loading } = useAppSelector((state) => state.analysis);
     console.log(finalRequirements)
