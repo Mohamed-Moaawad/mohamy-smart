@@ -9,24 +9,23 @@ import CustomCard from "../../../../../components/ui/card/CustomCard";
 import { MdDone } from "react-icons/md";
 import NotFoundImage from "../../../../../components/notFound/NotFoundImage";
 import toast from 'react-hot-toast';
-import thunkGeneratePdf from '../../../../../redux/analysis/thunk/thunkGeneratePdf';
+import thunkGetSummary from '../../../../../redux/analysis/thunk/thunkGeneratePdf';
 
 type TFinalRequirements = {
     caseId: string;
     finalFacts: string;
     nextStep: () => void;
-    defensesWithDetailsList: {
-        title: string;
-        detailsText: string;
-    }[];
-    setPdf: React.Dispatch<React.SetStateAction<string>>;
 }
-const FinalRequirements = ({ caseId, nextStep, defensesWithDetailsList, setPdf }: TFinalRequirements) => {
+const FinalRequirements = ({ caseId, nextStep }: TFinalRequirements) => {
     const dispatch = useAppDispatch();
-    const { finalRequirements, factAnalysis, loading } = useAppSelector((state) => state.analysis);
-    console.log(finalRequirements)
+    const { finalRequirements, loading } = useAppSelector((state) => state.analysis);
+    console.log(finalRequirements);
     const [isLoading, setIsLoading] = useState<boolean>(false);
-    const [selectedRequirementsList, setSelectedRequirementsList] = useState<string[]>([]);
+    const [selectedRequirementsList, setSelectedRequirementsList] = useState<{
+        id: string;
+        requestLevel: string;
+        requestText: string;
+    }[]>([]);
 
 
     const addRequirement = (item: string) => {
@@ -43,33 +42,23 @@ const FinalRequirements = ({ caseId, nextStep, defensesWithDetailsList, setPdf }
     // console.log(selectedRequirementsList);
 
     const sendData = async () => {
-        if (factAnalysis) {
-            setIsLoading(true);
-            const loadingToast = toast.loading('جاري إنشاء المذكرة النهائية...');
-            try {
-                const base64Pdf = await dispatch(thunkGeneratePdf({
-                    caseId,
-                    defenses: defensesWithDetailsList,
-                    factsAndClassificationText: factAnalysis,
-                    finalRequestsText: selectedRequirementsList,
-                })).unwrap();
-
-                setPdf(base64Pdf);
-
-                nextStep();
-                toast.success('تم إنشاء المذكرة النهائية');
-            } catch (error) {
-                toast.error(`حدث خطأ: ${error}`);
-            } finally {
-                toast.dismiss(loadingToast);
-                setIsLoading(false);
-            }
+        setIsLoading(true);
+        const loadingToast = toast.loading('جاري إنشاء المذكرة النهائية...');
+        try {
+            await dispatch(thunkGetSummary({ caseId })).unwrap();
+            toast.success('تم إنشاء المذكرة النهائية');
+            nextStep();
+        } catch (error) {
+            toast.error(`حدث خطأ: ${error}`);
+        } finally {
+            toast.dismiss(loadingToast);
         }
+        setIsLoading(false);
     }
 
     useEffect(() => {
         if (finalRequirements) {
-            setSelectedRequirementsList(finalRequirements.finalRequirements)
+            setSelectedRequirementsList(finalRequirements)
         }
         const handleBeforeUnload = (e: BeforeUnloadEvent) => {
             e.preventDefault();
@@ -109,20 +98,23 @@ const FinalRequirements = ({ caseId, nextStep, defensesWithDetailsList, setPdf }
                 <SkeletonCards />
             )}
 
-            {finalRequirements && loading === 'succeeded' && (
+            {finalRequirements.length > 0 && loading === 'succeeded' && (
                 <div className="flex flex-wrap">
-                    {finalRequirements.finalRequirements.map((item, idx) => (
-                        <div key={idx} className="w-full md:w-6/12 lg:w-4/12 p-3">
+                    {finalRequirements.map((item, idx) => (
+                        <div key={item.id} className="w-full md:w-6/12 lg:w-4/12 p-3">
                             <CustomCard
-                                onClick={() => addRequirement(item)}
+                                onClick={() => addRequirement(item.requestText)}
                             >
                                 <div className="head-card mb-5">
-                                    <div className={`icon ${selectedRequirementsList.includes(item) && 'selected'}`}>
-                                        {selectedRequirementsList.includes(item) && <MdDone />}
+                                    <div className={`icon ${selectedRequirementsList.includes(item.requestText) && 'selected'}`}>
+                                        {selectedRequirementsList.includes(item.requestText) && <MdDone />}
                                     </div>
                                     <span>الطلب رقم {idx + 1}</span>
                                 </div>
-                                <h5 className="defense">{item}</h5>
+                                <div className="badge">
+                                    <span>{item.requestLevel}</span>
+                                </div>
+                                <p className="defense">{item.requestText}</p>
                             </CustomCard>
                         </div>
                     ))}
@@ -136,13 +128,13 @@ const FinalRequirements = ({ caseId, nextStep, defensesWithDetailsList, setPdf }
                                 radius='md'
                                 endContent={!isLoading && <IoArrowBackOutline />}
                                 isLoading={isLoading}
-                                onClick={sendData}
+                            onClick={sendData}
                             />
                         </div>
                     </div>
                 </div>
             )}
-            {finalRequirements && finalRequirements.finalRequirements.length === 0 && loading === 'succeeded' && (
+            {finalRequirements.length === 0 && loading === 'succeeded' && (
                 <NotFoundImage text="لا توجد بيانات لعرضها" />
             )}
         </div>

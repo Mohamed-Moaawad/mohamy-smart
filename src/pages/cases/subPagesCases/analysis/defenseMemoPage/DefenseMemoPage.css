@@ -67,16 +67,8 @@
     color: #fff;
 }
 
-.defense-memo .custom-card h5.defense {
-    margin: 25px 0;
-    background-color: var(--second-color);
-    padding: 8px;
-    border-radius: var(--sm-radius);
-    color: #1B1B1B;
-    font-weight: 500;
-}
 
-.defense-memo .custom-card .types div:nth-child(1) {
+.defense-memo .custom-card .defense-memo .custom-card .types div:nth-child(1) {
     border: 2px solid var(--main-color);
     color: var(--main-color);
 }
@@ -116,3 +108,82 @@
     min-height: 250px;
 }
 
+
+
+
+/* ===========================================
+    start defenses-list
+=============================================== */
+
+.defense-memo .defenses-list .custom-card h5.defense {
+    margin: 25px 0;
+    background-color: var(--second-color);
+    padding: 8px;
+    border-radius: var(--sm-radius);
+    color: #1B1B1B;
+    font-weight: 500;
+}
+
+.defense-memo .defenses-list .custom-card .strength {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.defense-memo .defenses-list .custom-card .strength h5 {
+    font-weight: 500;
+    color: var(--title-color);
+    text-decoration: underline;
+}
+
+.defense-memo .defenses-list .custom-card .strength span {
+    padding: 6px 12px;
+    border-radius: var(--sm-radius);
+    color: #fff;
+    background-color: #ce1f00;
+}
+
+.defense-memo .defenses-list .custom-card .strength.Medium span {
+    background-color: #e9be01;
+}
+
+.defense-memo .defenses-list .custom-card .strength.Strong span {
+    background-color: #00ce0a;
+}
+
+
+/* ===========================================
+    end defenses-list
+=============================================== */
+
+
+
+/* ===========================================
+    start final-requirements
+=============================================== */
+.defense-memo .final-requirements .custom-card .badge span {
+    padding: 6px 12px;
+    border: 1px solid var(--main-color);
+    border-radius: var(--sm-radius);
+    color: var(--title-color);
+}
+
+.defense-memo .final-requirements .custom-card p.defense {
+    margin: 25px 0;
+    background-color: var(--second-color);
+    padding: 8px;
+    border-radius: var(--sm-radius);
+    color: #1B1B1B;
+    font-weight: 500;
+}
+
+/* ===========================================
+    end final-requirements
+=============================================== */
+/* ===========================================
+    start final-note
+=============================================== */
+
+/* ===========================================
+    end final-note
+=============================================== */

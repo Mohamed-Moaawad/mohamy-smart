@@ -10,7 +10,7 @@ import toast, { Toaster } from "react-hot-toast";
 // import InputSelect from "../ui/inputs/InputSelect";
 
 const AddNewCaseFromOCRForm = () => {
-    const { register, handleSubmit, formState: { errors }, setValue, } = useForm<addNewCaseFromOCRType>({
+    const { register, handleSubmit, formState: { errors }, setValue } = useForm<addNewCaseFromOCRType>({
         mode: 'onChange',
         resolver: zodResolver(addNewCaseFromOCRSchema),
         defaultValues: {

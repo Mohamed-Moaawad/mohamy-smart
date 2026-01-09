@@ -5,6 +5,7 @@ type TCustomTextarea = {
     label: string;
     placeholder: string;
     variant: 'flat' | 'faded' | 'bordered';
+    rows?: number;
     readOnly?: boolean;
     value?: string;
     onChange?: React.ChangeEventHandler<HTMLInputElement>;
@@ -12,7 +13,7 @@ type TCustomTextarea = {
     errorMessage?: string;
 }
 
-const CustomTextarea = ({ label, placeholder, variant, readOnly, value, onChange, isInvalid, errorMessage, ...rest }: TCustomTextarea) => {
+const CustomTextarea = ({ label, placeholder, variant,rows, readOnly, value, onChange, isInvalid, errorMessage, ...rest }: TCustomTextarea) => {
     return (
         <Textarea
             disableAnimation
@@ -21,6 +22,7 @@ const CustomTextarea = ({ label, placeholder, variant, readOnly, value, onChange
                 base: "w-full",
                 input: "resize-y min-h-[80px]",
             }}
+            rows={rows}
             label={label}
             placeholder={placeholder}
             variant={variant}

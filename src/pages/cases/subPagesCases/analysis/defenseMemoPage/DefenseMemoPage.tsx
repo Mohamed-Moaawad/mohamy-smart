@@ -21,11 +21,6 @@ const DefenseMemoPage = () => {
     const caseId = parts[2];
 
     const [finalFacts, setFinalFacts] = useState<string>('');
-    const [defensesWithDetailsList, setDefensesWithDetailsList] = useState<{
-        title: string;
-        detailsText: string;
-    }[]>([]);
-    const [pdf, setPdf] = useState<string>('');
 
     return (
         <section className="defense-memo">
@@ -47,13 +42,13 @@ const DefenseMemoPage = () => {
                             <LegalAnalysis finalFacts={finalFacts} nextStep={nextStep} caseId={caseId} />
                         </Stepper.Step>
                         <Stepper.Step label="قائمة الدفوع">
-                            <DefensesList caseId={caseId} finalFacts={finalFacts} nextStep={nextStep} setDefensesWithDetailsList={setDefensesWithDetailsList} />
+                            <DefensesList caseId={caseId} finalFacts={finalFacts} nextStep={nextStep} />
                         </Stepper.Step>
                         <Stepper.Step label="الطلبات الختامية">
-                            <FinalRequirements caseId={caseId} finalFacts={finalFacts} nextStep={nextStep} defensesWithDetailsList={defensesWithDetailsList} setPdf={setPdf} />
+                            <FinalRequirements caseId={caseId} finalFacts={finalFacts} nextStep={nextStep}/>
                         </Stepper.Step>
                         <Stepper.Step label="المذكرة النهائية">
-                            <FinalNote pdf={pdf} />
+                            <FinalNote />
                         </Stepper.Step>
                         <Stepper.Step label="المناقشة القانونية">
                             Step 6 content: Get full access

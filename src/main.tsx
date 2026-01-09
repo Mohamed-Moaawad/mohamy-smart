@@ -18,5 +18,5 @@ createRoot(document.getElementById('root')!).render(
         </Provider>
       </MantineProvider>
     </HeroUIProvider>
-  </StrictMode>,
+  </StrictMode>
 )

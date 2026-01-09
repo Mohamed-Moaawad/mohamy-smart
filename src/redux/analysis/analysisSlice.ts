@@ -5,22 +5,66 @@ import { isString } from "../../utils/guards";
 import thunkGenerateDefenses from "./thunk/thunkGenerateDefenses";
 import thunkAnalysisDefense from "./thunk/thunkAnalysisDefense";
 import thunkFinalRequirements from "./thunk/thunkFinalRequirements​";
-import thunkGeneratePdf from "./thunk/thunkGeneratePdf";
+import thunkGetSummary from "./thunk/thunkGeneratePdf";
 
+type TDefense = {
+    id: string;
+    defenseTitle: string;
+    basisFromCase: string;
+    scope: string;
+    strength: "Strong" | "Medium" | "Weak";
+};
 type TDefenses = {
-    proceduralDefenses: string[];
-    substantiveDefenses: string[];
-    evidentiaryDefenses: string[];
+    defensesFormal: TDefense[];
+    defensesSubstantive: TDefense[];
+    defensesEvidentiary: TDefense[];
+}
+
+type TFactAnalysis = {
+    caseType: string;
+    caseNumber: string;
+    courtName: string;
+    legalFactsSummary: string[];
+    defendantsPositions: {
+        defendantName: string;
+        positionSummary: string;
+    }[];
+    evidenceMap: {
+        source: string;
+        proves: string;
+        doesNotProve: string;
+        limitations: string;
+    }[];
+    legalAndTechnicalReviewPoints: string[];
+    potentialLegalCharacterization: {
+        chargeDescription: string;
+        elementsReliedUpon: string[];
+        elementsLackingProof: string[];
+    };
+}
+type TFinalRequirements = {
+    id: string;
+    requestLevel: string;
+    requestText: string;
 }
 
 type TAnalysisState = {
-    factAnalysis: string | null;
+    factAnalysis: TFactAnalysis | null;
     defenses: TDefenses | null;
     analysisDefenses: { memorandumText: string } | null;
-    finalRequirements: {
-        finalRequirements: string[] | []
+    finalRequirements: TFinalRequirements[];
+    summary: {
+        caseId: string;
+        caseNumber: string;
+        caseType: "criminal" | string;
+        courtName: string;
+        clientName: string;
+        apponentName: string;
+
+        factAnalysis: TFactAnalysis;
+        defenses: TDefense;
+        finalRequirements: TFinalRequirements[];
     } | null;
-    // generatePdf: Blob | null;
     loading: TLoading;
     error: string | null;
 }
@@ -29,8 +73,8 @@ const initialState: TAnalysisState = {
     factAnalysis: null,
     defenses: null,
     analysisDefenses: null,
-    finalRequirements: null,
-    // generatePdf: null,
+    finalRequirements: [],
+    summary: null,
     loading: 'idle',
     error: null,
 };
@@ -93,7 +137,7 @@ const analysisSlice = createSlice({
             })
             .addCase(thunkFinalRequirements.fulfilled, (state, action) => {
                 state.loading = 'succeeded';
-                state.finalRequirements = action.payload;
+                state.finalRequirements = action.payload.finalPrayers;
             })
             .addCase(thunkFinalRequirements.rejected, (state, action) => {
                 state.loading = 'failed';
@@ -101,16 +145,16 @@ const analysisSlice = createSlice({
                     state.error = action.payload;
                 }
             })
-            // Generate Pdf
-            .addCase(thunkGeneratePdf.pending, (state) => {
+            // Get Summary
+            .addCase(thunkGetSummary.pending, (state) => {
                 state.loading = 'pending';
                 state.error = null;
             })
-            .addCase(thunkGeneratePdf.fulfilled, (state) => {
+            .addCase(thunkGetSummary.fulfilled, (state, action) => {
                 state.loading = 'succeeded';
-                // state.generatePdf = action.payload;
+                state.summary = action.payload;
             })
-            .addCase(thunkGeneratePdf.rejected, (state, action) => {
+            .addCase(thunkGetSummary.rejected, (state, action) => {
                 state.loading = 'failed';
                 if (isString(action.payload)) {
                     state.error = action.payload;

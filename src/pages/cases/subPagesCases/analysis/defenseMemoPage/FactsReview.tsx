@@ -37,15 +37,15 @@ const FactsReview = ({ facts, nextStep, setFinalFacts, caseId }: TFactsReview) =
 
         const factsText = selectedFacts.join('')
         await dispatch(thunkFactAnalysis({ caseId, caseFacts: factsText })).unwrap()
-            .then(() => {
-                setFinalFacts(factsText);
-                toast.success('تم تحليل الوقائع');
-                nextStep();
-            }).catch((error) => {
-                toast.error(`حدث خطأ: ${error}`)
-            }).finally(() => {
-                toast.dismiss(loadingToast);
-            })
+        try {
+            setFinalFacts(factsText);
+            toast.success('تم تحليل الوقائع');
+            nextStep();
+        } catch (error) {
+            toast.error(`حدث خطأ: ${error}`)
+        } finally {
+            toast.dismiss(loadingToast);
+        }
         setIsLoading(false);
     }
 

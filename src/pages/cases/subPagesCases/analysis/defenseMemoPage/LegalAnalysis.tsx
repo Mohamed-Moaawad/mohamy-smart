@@ -10,8 +10,6 @@ import toast from 'react-hot-toast';
 import thunkFactAnalysis from '../../../../../redux/analysis/thunk/thunkFactAnalysis';
 import thunkGenerateDefenses from '../../../../../redux/analysis/thunk/thunkGenerateDefenses';
 import SkeletonCardsList from '../../../../../components/skeleton/SkeletonCardsList';
-import CustomTextarea from '../../../../../components/ui/inputs/CustomTextarea';
-
 
 type TLegalAnalysis = {
     finalFacts: string;
@@ -24,7 +22,7 @@ const LegalAnalysis = ({ finalFacts, nextStep, caseId }: TLegalAnalysis) => {
 
     const dispatch = useAppDispatch();
     const { factAnalysis, loading } = useAppSelector((state) => state.analysis);
-    const [analysisText, setAnalysisText] = useState<string>('');
+    // const [analysisText, setAnalysisText] = useState<string>('');
 
     const [isLoading, setIsLoading] = useState<boolean>(false);
 
@@ -48,7 +46,7 @@ const LegalAnalysis = ({ finalFacts, nextStep, caseId }: TLegalAnalysis) => {
         if (caseId && factAnalysis) {
             setIsLoading(true);
             const loadingToast = toast.loading('جاري إنشاء الدفوع...');
-            await dispatch(thunkGenerateDefenses({ caseId, legalAnalysisText: factAnalysis })).unwrap()
+            await dispatch(thunkGenerateDefenses({ caseId, caseFacts: finalFacts, legalAnalysis: factAnalysis })).unwrap()
                 .then(() => {
                     toast.success('تم إنشاء الدفوع');
                     nextStep();
@@ -62,9 +60,9 @@ const LegalAnalysis = ({ finalFacts, nextStep, caseId }: TLegalAnalysis) => {
     }
 
     useEffect(() => {
-        if (factAnalysis) {
-            setAnalysisText(factAnalysis)
-        }
+        // if (factAnalysis) {
+        //     setAnalysisText(factAnalysis)
+        // }
         const handleBeforeUnload = (e: BeforeUnloadEvent) => {
             e.preventDefault();
             e.returnValue = "";
@@ -114,13 +112,93 @@ const LegalAnalysis = ({ finalFacts, nextStep, caseId }: TLegalAnalysis) => {
                     <div className="w-full mt-12">
                         <h3>التحليل القانوني المتقدم</h3>
                         <CustomCard>
-                            <CustomTextarea
-                                label='نتيجة التحليل'
-                                placeholder='نتيجة التحليل'
-                                variant='flat'
-                                value={analysisText}
-                                onChange={(e) => setAnalysisText(e.target.value)}
-                            />
+                            <h3 className='mt-5'>بيانات القضية الأساسية</h3>
+                            <div className=''>
+                                <p><strong>نوع القضية : </strong>{factAnalysis.caseType}</p>
+                                <p><strong>رقم القضية : </strong>{factAnalysis.caseNumber}</p>
+                                <p><strong>المحكمة : </strong>{factAnalysis.courtName}</p>
+                            </div>
+
+                            <h3 className='mt-5'>ملخص الوقائع</h3>
+                            <div className=''>
+                                <ul className='pr-5'>
+                                    {factAnalysis.legalFactsSummary.map((item, idx) => (
+                                        <li key={idx} className='list-disc my-1'>
+                                            {item}
+                                        </li>
+                                    ))}
+                                </ul>
+                            </div>
+
+                            <h3 className='mt-5'>موقف المتهم</h3>
+                            <div className=''>
+                                {factAnalysis.defendantsPositions.map((def, idx) => (
+                                    <div key={idx}>
+                                        <p className='mt-2'><strong>الاسم :  </strong>{def.defendantName}</p>
+                                        <p className='mt-2'><strong>ملخص الموقف : </strong>{def.positionSummary}</p>
+                                    </div>
+                                ))}
+                            </div>
+
+                            <h3 className='mt-5'>خريطة الأدلة</h3>
+                            <div className=''>
+                                {factAnalysis.evidenceMap.map((item, idx) => (
+                                    <ul key={idx} className='my-2'>
+                                        <h5 className='mt-3 text-[#555] font-bold'>الأدلة رقم {idx + 1}</h5>
+                                        <li>
+                                            <strong>المصدر : </strong>
+                                            {item.source}
+                                        </li>
+                                        <li>
+                                            <strong>يثبت : </strong>
+                                            {item.proves}
+                                        </li>
+                                        <li>
+                                            <strong>لا يثبت : </strong>
+                                            {item.doesNotProve}
+                                        </li>
+                                        <li>
+                                            <strong>القيود : </strong>
+                                            {item.limitations}
+                                        </li>
+                                    </ul>
+                                ))}
+                            </div>
+
+                            <h3 className='mt-5'>نقاط المراجعة القانونية والفنية</h3>
+                            <div className=''>
+                                <ul className='pr-5'>
+                                    {factAnalysis.legalAndTechnicalReviewPoints.map((item, idx) => (
+                                        <li key={idx} className='list-disc my-1'>
+                                            {item}
+                                        </li>
+                                    ))}
+                                </ul>
+                            </div>
+
+                            <h3 className='mt-5'>التوصيف القانوني المحتمل</h3>
+                            <div className=''>
+                                <p className='mb-2'><strong>نوع القضية : </strong>{factAnalysis.potentialLegalCharacterization.chargeDescription}</p>
+
+                                <strong className='mt-2'>لعناصر التي يعتمد عليها</strong>
+                                <ul className='pr-5 mb-2'>
+                                    {factAnalysis.potentialLegalCharacterization.elementsReliedUpon.map((item, idx) => (
+                                        <li key={idx} className='list-disc my-1'>
+                                            {item}
+                                        </li>
+                                    ))}
+                                </ul>
+                                <strong>عناصر تفتقر إلى الدليل</strong>
+                                <ul className='pr-5'>
+                                    {factAnalysis.potentialLegalCharacterization.elementsLackingProof.map((item, idx) => (
+                                        <li key={idx} className='list-disc my-1'>
+                                            {item}
+                                        </li>
+                                    ))}
+                                </ul>
+
+                            </div>
+
                         </CustomCard>
                     </div>
 
