@@ -28,17 +28,23 @@ const FinalRequirements = ({ caseId, nextStep }: TFinalRequirements) => {
     }[]>([]);
 
 
-    const addRequirement = (item: string) => {
-        setSelectedRequirementsList((prev) => {
-            if (prev.includes(item)) {
+    const addRequirement = (item: {
+        id: string;
+        requestLevel: string;
+        requestText: string;
+    }) => {
+        setSelectedRequirementsList(prev => {
+            const exists = prev.some(r => r.id === item.id);
+
+            if (exists) {
                 // 🗑️ امسحها
-                return prev.filter((Defense) => Defense !== item);
+                return prev.filter(r => r.id !== item.id);
             } else {
                 // ➕ ضيفها
                 return [...prev, item];
             }
         });
-    }
+    };
     // console.log(selectedRequirementsList);
 
     const sendData = async () => {
@@ -103,11 +109,11 @@ const FinalRequirements = ({ caseId, nextStep }: TFinalRequirements) => {
                     {finalRequirements.map((item, idx) => (
                         <div key={item.id} className="w-full md:w-6/12 lg:w-4/12 p-3">
                             <CustomCard
-                                onClick={() => addRequirement(item.requestText)}
+                                onClick={() => addRequirement(item)}
                             >
                                 <div className="head-card mb-5">
-                                    <div className={`icon ${selectedRequirementsList.includes(item.requestText) && 'selected'}`}>
-                                        {selectedRequirementsList.includes(item.requestText) && <MdDone />}
+                                    <div className={`icon ${selectedRequirementsList.includes(item) && 'selected'}`}>
+                                        {selectedRequirementsList.includes(item) && <MdDone />}
                                     </div>
                                     <span>الطلب رقم {idx + 1}</span>
                                 </div>
@@ -128,7 +134,7 @@ const FinalRequirements = ({ caseId, nextStep }: TFinalRequirements) => {
                                 radius='md'
                                 endContent={!isLoading && <IoArrowBackOutline />}
                                 isLoading={isLoading}
-                            onClick={sendData}
+                                onClick={sendData}
                             />
                         </div>
                     </div>

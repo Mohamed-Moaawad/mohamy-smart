@@ -95,7 +95,7 @@ const Cases = () => {
                     {loading === 'failed' && (
                         <div className="text-center p-5">
                             <p>حدث خطأ في تحميل البيانات، يرجى إعادة تسجيل الدخول.</p>
-                            <CustomButton text="تسجيل الدخول" onClick={() => navigate('/auth/login')} />
+                            <CustomButton type='button' radius='md' size='md' text="تسجيل الدخول" onClick={() => navigate('/auth/login')} />
                         </div>
                     )}
 
