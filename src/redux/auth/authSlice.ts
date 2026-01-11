@@ -17,7 +17,7 @@ const accessToken = localStorage.getItem('accessToken');
 
 const initialState: TInitialState = {
     user: savedUser ? JSON.parse(savedUser) : null,
-    token: accessToken ? accessToken : null,
+    token: accessToken || null,
     loading: 'idle',
     error: null,
 }

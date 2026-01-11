@@ -202,14 +202,6 @@ const LegalAnalysis = ({ finalFacts, nextStep, caseId }: TLegalAnalysis) => {
                         </CustomCard>
                     </div>
 
-                    <div className="w-full mt-12">
-                        <h3>الملاحظات والتوصيات الإستراتيجية</h3>
-                        <CustomCard>
-                            {/* {factAnalysis.legalClaims} */}
-                            dsdsd
-                        </CustomCard>
-                    </div>
-
                     <div className="w-full flex justify-end mt-10">
                         <div className="w-full sm:w-6/12 md:w-4/12 lg:w-3/12">
                             <CustomButton

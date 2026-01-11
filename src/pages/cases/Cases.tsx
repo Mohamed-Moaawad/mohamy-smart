@@ -27,7 +27,9 @@ const Cases = () => {
     const navigate = useNavigate();
 
     useEffect(() => {
-        dispatch(thunkGetAllCases({ pageNumber, pageSize: 10, lawyerId: user?.userId }));
+        if (user) {
+            dispatch(thunkGetAllCases({ pageNumber, pageSize: 10, lawyerId: user.userId }));
+        }
     }, [dispatch, pageNumber, user]);
 
     const formDate = (date: string) => {
@@ -88,6 +90,13 @@ const Cases = () => {
                 <div className="flex flex-wrap">
                     {loading === 'pending' && (
                         <SkeletonCards />
+                    )}
+
+                    {loading === 'failed' && (
+                        <div className="text-center p-5">
+                            <p>حدث خطأ في تحميل البيانات، يرجى إعادة تسجيل الدخول.</p>
+                            <CustomButton text="تسجيل الدخول" onClick={() => navigate('/auth/login')} />
+                        </div>
                     )}
 
                     {cases.length === 0 && loading === 'succeeded' && (

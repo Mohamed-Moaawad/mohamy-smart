@@ -10,12 +10,11 @@ import SkeletonCards from "../../../../../components/skeleton/SkeletonCards"
 import NotFoundImage from "../../../../../components/notFound/NotFoundImage"
 import toast from "react-hot-toast";
 // import thunkGenerateDefenses from "../../../../../redux/analysis/thunk/thunkGenerateDefenses";
-import { useDisclosure } from '@heroui/react';
+// import { useDisclosure } from '@heroui/react';
 // import CustomModal from '../../../../../components/ui/modal/CustomModal';
 // import AddNewDefense from '../../../../../components/forms/AddNewDefense';
 import thunkAnalysisDefense from '../../../../../redux/analysis/thunk/thunkAnalysisDefense';
 import thunkFinalRequirements from '../../../../../redux/analysis/thunk/thunkFinalRequirements​';
-import CustomModal from '../../../../../components/ui/modal/CustomModal';
 
 type TDefensesList = {
     caseId: string;
@@ -38,7 +37,7 @@ type TAllDefensesList = {
 
 
 const DefensesList = ({ caseId, nextStep }: TDefensesList) => {
-    const { onOpen, isOpen, onOpenChange } = useDisclosure();
+    // const { onOpen, isOpen, onOpenChange } = useDisclosure();
     const dispatch = useAppDispatch();
     const { defenses, factAnalysis, loading } = useAppSelector((state) => state.analysis);
     const [allDefensesList, setAllDefensesList] = useState<TAllDefensesList | null>(null);
@@ -64,7 +63,31 @@ const DefensesList = ({ caseId, nextStep }: TDefensesList) => {
     }
 
 
-    const [perExplanation, setPerExplanation] = useState()
+    const [perExplanations, setPerExplanations] = useState<Record<string, {
+        introduction: string;
+        factualBasis: string;
+        legalTextsFull: {
+            lawName: string;
+            articleNumber: string;
+            fullText: string;
+        }[];
+        legalTextsUnavailableReason: string;
+        linkingTextsToFacts: string;
+        cassationPrecedentsFull: {
+            appealNumber: string;
+            judicialYear: string;
+            sessionDate: string;
+            fullText: string;
+        }[];
+        cassationPrecedentsUnavailableReason: string;
+        legalApplication: string;
+        counterArgumentsAndResponse: string;
+        legalEffectOfAcceptance: string;
+        strengthsAndRisks: string;
+    }>>({});
+
+
+
     const generateDetailedExplanation = async (defenseId: string) => {
         setIsLoading(true);
         const loadingToast = toast.loading('جاري شرح الدافع...');
@@ -72,8 +95,12 @@ const DefensesList = ({ caseId, nextStep }: TDefensesList) => {
         try {
             const textExplanation = await dispatch(thunkAnalysisDefense({ defenseId })).unwrap()
             toast.success('تم شرح الدافع');
-            setPerExplanation(textExplanation);
-            onOpen();
+            // نضيف النتيجة للكارد المحدد
+            setPerExplanations((prev) => ({
+                ...prev,
+                [defenseId]: textExplanation.memorandum
+            }));
+            // onOpen();
         } catch (error) {
             toast.error(`حدث خطأ: ${error}`)
         } finally {
@@ -162,7 +189,7 @@ const DefensesList = ({ caseId, nextStep }: TDefensesList) => {
             toast.success('تم إنشاء الطلبات الختامية');
             nextStep();
         } catch (error) {
-            toast.error(`حدث خطأ: ${error}`)
+            toast.error(`حدث خطأ: ${error}`);
         } finally {
             toast.dismiss(loadingToast);
         }
@@ -195,9 +222,9 @@ const DefensesList = ({ caseId, nextStep }: TDefensesList) => {
                                 radius="full"
                                 size="md"
                                 startContent={<IoAdd />}
-                                // isDisabled={isLoading}
-                                // isLoading={isLoading}
-                                onClick={onOpen}
+                            // isDisabled={isLoading}
+                            // isLoading={isLoading}
+                            // onClick={onOpen}
                             />
                         </div>
                     </div>
@@ -232,17 +259,6 @@ const DefensesList = ({ caseId, nextStep }: TDefensesList) => {
                                     <h5 className="defense">{item.defenseTitle}</h5>
                                     <p className='my-3'><strong>أساس من القضية : </strong>{item.basisFromCase}</p>
 
-                                    {/* {explanations[key] && (
-                                        <div className='overflow-y-auto mb-4'>
-                                            <CustomTextarea
-                                                label=''
-                                                placeholder=''
-                                                variant='flat'
-                                                value={explanations[key]}
-                                                readOnly
-                                            />
-                                        </div>
-                                    )} */}
                                     <div className="flex justify-end">
                                         <div className="w-full sm:w-6/12 md:w-">
                                             <CustomButton
@@ -256,6 +272,41 @@ const DefensesList = ({ caseId, nextStep }: TDefensesList) => {
                                             />
                                         </div>
                                     </div>
+                                    {perExplanations[item.id] && (
+                                        <div className='overflow-y-auto mb-4 py-3  h-[40vh]'>
+                                            <p className='mt-2'><strong>مقدمة : </strong>{perExplanations[item.id]?.introduction}</p>
+                                            <p className='mt-2'><strong>مقدمة : </strong>{perExplanations[item.id]?.factualBasis}</p>
+                                            <p className='mt-2'><strong>النصوص القانونية كاملة</strong></p>
+                                            <ul>
+                                                {perExplanations[item.id]?.legalTextsFull.map((item, idx) => (
+                                                    <li key={idx}>
+                                                        <ul>
+                                                            <li>اسم القانون : {item.lawName}</li>
+                                                            <li>رقم المقالة : {item.articleNumber}</li>
+                                                            <li>النص : {item.fullText}</li>
+                                                        </ul>
+                                                    </li>
+                                                ))}
+                                            </ul>
+                                            <p className='mt-2'><strong>ربط النصوص بالحقائق : </strong>{perExplanations[item.id]?.linkingTextsToFacts}</p>
+                                            <ul>
+                                                {perExplanations[item.id]?.cassationPrecedentsFull.map((item, idx) => (
+                                                    <li key={idx}>
+                                                        <ul>
+                                                            <li>رقم الاستئناف : {item.appealNumber}</li>
+                                                            <li>السنة القضائية : {item.judicialYear}</li>
+                                                            <li>تاريخ الجلسة : {item.sessionDate}</li>
+                                                            <li>النص : {item.fullText}</li>
+                                                        </ul>
+                                                    </li>
+                                                ))}
+                                            </ul>
+                                            <p className='mt-2'><strong>التطبيق القانوني : </strong>{perExplanations[item.id]?.legalApplication}</p>
+                                            <p className='mt-2'><strong>الحجج المضادة والرد : </strong>{perExplanations[item.id]?.counterArgumentsAndResponse}</p>
+                                            <p className='mt-2'><strong>الأثر القانوني للقبول : </strong>{perExplanations[item.id]?.legalEffectOfAcceptance}</p>
+                                            <p className='mt-2'><strong>نقاط القوة والمخاطر : </strong>{perExplanations[item.id]?.strengthsAndRisks}</p>
+                                        </div>
+                                    )}
                                 </CustomCard>
                             </div>
                         )
@@ -282,17 +333,7 @@ const DefensesList = ({ caseId, nextStep }: TDefensesList) => {
                                     </div>
                                     <h5 className="defense">{item.defenseTitle}</h5>
                                     <p className='my-3'><strong>أساس من القضية : </strong>{item.basisFromCase}</p>
-                                    {/* {explanations[key] && (
-                                        <div className='overflow-y-auto mb-4'>
-                                            <CustomTextarea
-                                                label=''
-                                                placeholder=''
-                                                variant='flat'
-                                                value={explanations[key]}
-                                                readOnly
-                                            />
-                                        </div>
-                                    )} */}
+
                                     <div className="flex justify-end">
                                         <div className="w-full sm:w-6/12 md:w-">
                                             <CustomButton
@@ -306,6 +347,42 @@ const DefensesList = ({ caseId, nextStep }: TDefensesList) => {
                                             />
                                         </div>
                                     </div>
+
+                                    {perExplanations[item.id] && (
+                                        <div className='overflow-y-auto mb-4 py-3  h-[40vh]'>
+                                            <p className='mt-2'><strong>مقدمة : </strong>{perExplanations[item.id]?.introduction}</p>
+                                            <p className='mt-2'><strong>مقدمة : </strong>{perExplanations[item.id]?.factualBasis}</p>
+                                            <p className='mt-2'><strong>النصوص القانونية كاملة</strong></p>
+                                            <ul>
+                                                {perExplanations[item.id]?.legalTextsFull.map((item, idx) => (
+                                                    <li key={idx}>
+                                                        <ul>
+                                                            <li>اسم القانون : {item.lawName}</li>
+                                                            <li>رقم المقالة : {item.articleNumber}</li>
+                                                            <li>النص : {item.fullText}</li>
+                                                        </ul>
+                                                    </li>
+                                                ))}
+                                            </ul>
+                                            <p className='mt-2'><strong>ربط النصوص بالحقائق : </strong>{perExplanations[item.id]?.linkingTextsToFacts}</p>
+                                            <ul>
+                                                {perExplanations[item.id]?.cassationPrecedentsFull.map((item, idx) => (
+                                                    <li key={idx}>
+                                                        <ul>
+                                                            <li>رقم الاستئناف : {item.appealNumber}</li>
+                                                            <li>السنة القضائية : {item.judicialYear}</li>
+                                                            <li>تاريخ الجلسة : {item.sessionDate}</li>
+                                                            <li>النص : {item.fullText}</li>
+                                                        </ul>
+                                                    </li>
+                                                ))}
+                                            </ul>
+                                            <p className='mt-2'><strong>التطبيق القانوني : </strong>{perExplanations[item.id]?.legalApplication}</p>
+                                            <p className='mt-2'><strong>الحجج المضادة والرد : </strong>{perExplanations[item.id]?.counterArgumentsAndResponse}</p>
+                                            <p className='mt-2'><strong>الأثر القانوني للقبول : </strong>{perExplanations[item.id]?.legalEffectOfAcceptance}</p>
+                                            <p className='mt-2'><strong>نقاط القوة والمخاطر : </strong>{perExplanations[item.id]?.strengthsAndRisks}</p>
+                                        </div>
+                                    )}
                                 </CustomCard>
                             </div>
                         )
@@ -332,17 +409,7 @@ const DefensesList = ({ caseId, nextStep }: TDefensesList) => {
                                     </div>
                                     <h5 className="defense">{item.defenseTitle}</h5>
                                     <p className='my-3'><strong>أساس من القضية : </strong>{item.basisFromCase}</p>
-                                    {/* {explanations[key] && (
-                                        <div className='overflow-y-auto mb-4'>
-                                            <CustomTextarea
-                                                label=''
-                                                placeholder=''
-                                                variant='flat'
-                                                value={explanations[key]}
-                                                readOnly
-                                            />
-                                        </div>
-                                    )} */}
+
                                     <div className="flex justify-end">
                                         <div className="w-full sm:w-6/12 md:w-">
                                             <CustomButton
@@ -356,6 +423,42 @@ const DefensesList = ({ caseId, nextStep }: TDefensesList) => {
                                             />
                                         </div>
                                     </div>
+
+                                    {perExplanations[item.id] && (
+                                        <div className='overflow-y-auto mb-4 py-3  h-[40vh]'>
+                                            <p className='mt-2'><strong>مقدمة : </strong>{perExplanations[item.id]?.introduction}</p>
+                                            <p className='mt-2'><strong>مقدمة : </strong>{perExplanations[item.id]?.factualBasis}</p>
+                                            <p className='mt-2'><strong>النصوص القانونية كاملة</strong></p>
+                                            <ul>
+                                                {perExplanations[item.id]?.legalTextsFull.map((item, idx) => (
+                                                    <li key={idx}>
+                                                        <ul>
+                                                            <li>اسم القانون : {item.lawName}</li>
+                                                            <li>رقم المقالة : {item.articleNumber}</li>
+                                                            <li>النص : {item.fullText}</li>
+                                                        </ul>
+                                                    </li>
+                                                ))}
+                                            </ul>
+                                            <p className='mt-2'><strong>ربط النصوص بالحقائق : </strong>{perExplanations[item.id]?.linkingTextsToFacts}</p>
+                                            <ul>
+                                                {perExplanations[item.id]?.cassationPrecedentsFull.map((item, idx) => (
+                                                    <li key={idx}>
+                                                        <ul>
+                                                            <li>رقم الاستئناف : {item.appealNumber}</li>
+                                                            <li>السنة القضائية : {item.judicialYear}</li>
+                                                            <li>تاريخ الجلسة : {item.sessionDate}</li>
+                                                            <li>النص : {item.fullText}</li>
+                                                        </ul>
+                                                    </li>
+                                                ))}
+                                            </ul>
+                                            <p className='mt-2'><strong>التطبيق القانوني : </strong>{perExplanations[item.id]?.legalApplication}</p>
+                                            <p className='mt-2'><strong>الحجج المضادة والرد : </strong>{perExplanations[item.id]?.counterArgumentsAndResponse}</p>
+                                            <p className='mt-2'><strong>الأثر القانوني للقبول : </strong>{perExplanations[item.id]?.legalEffectOfAcceptance}</p>
+                                            <p className='mt-2'><strong>نقاط القوة والمخاطر : </strong>{perExplanations[item.id]?.strengthsAndRisks}</p>
+                                        </div>
+                                    )}
                                 </CustomCard>
                             </div>
                         )
@@ -381,16 +484,7 @@ const DefensesList = ({ caseId, nextStep }: TDefensesList) => {
                 <NotFoundImage text="لا توجد دفوع. يجيب إعاجة المحاولة" />
             )}
 
-            <CustomModal isOpen={isOpen} onOpenChange={onOpenChange} size='lg' title='شرح الدافع' >
-                {/* <AddNewDefense
-                    allDefensesList={allDefensesList}
-                    setAllDefensesList={setAllDefensesList}
-                    onOpenChange={onOpenChange}
-                /> */}
-                <pre className='max-h-[60vh] overflow-y-auto' style={{ whiteSpace: "pre-wrap" }}>
-                    {JSON.stringify(perExplanation, null, 2)}
-                </pre>
-            </CustomModal>
+
         </div>
     );
 };

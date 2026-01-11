@@ -56,14 +56,16 @@ type TAnalysisState = {
     summary: {
         caseId: string;
         caseNumber: string;
-        caseType: "criminal" | string;
+        caseType: string;
         courtName: string;
         clientName: string;
         apponentName: string;
 
         factAnalysis: TFactAnalysis;
-        defenses: TDefense;
-        finalRequirements: TFinalRequirements[];
+        defenses: TDefenses;
+        finalRequirements: {
+            finalPrayers: TFinalRequirements[];
+        };
     } | null;
     loading: TLoading;
     error: string | null;

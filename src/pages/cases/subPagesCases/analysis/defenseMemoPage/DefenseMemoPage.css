@@ -59,6 +59,13 @@
     -webkit-box-orient: vertical;
     overflow: hidden;
 }
+.defense-memo .custom-card p  strong{
+    color: var(--title-color);
+}
+
+.defense-memo .custom-card ul li{
+    color: var(--text-color);
+}
 
 .defense-memo .custom-card .types div {
     padding: 4px 18px;

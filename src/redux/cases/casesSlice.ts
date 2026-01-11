@@ -63,7 +63,7 @@ const casesSlice = createSlice({
     reducers: {
         setPageNumber(state, action) {
             state.pageNumber = action.payload;
-        }
+        },
     },
     extraReducers(builder) {
         builder
@@ -97,6 +97,7 @@ const casesSlice = createSlice({
             })
             .addCase(thunkGetAllCases.rejected, (state, action) => {
                 state.loading = 'failed';
+                state.cases = [];
                 if (isString(action.payload)) {
                     state.error = action.payload;
                 }

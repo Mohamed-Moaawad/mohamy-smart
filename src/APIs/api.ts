@@ -8,6 +8,11 @@ const removeTokens = () => {
     localStorage.removeItem("refreshToken");
 };
 
+const handleLogout = () => {
+    removeTokens();
+    localStorage.removeItem("user"); // تأكد من مسح بيانات المستخدم أيضاً
+    window.location.replace("/auth/login"); // استخدام replace أفضل لمنع العودة للخلف
+};
 
 const api = axios.create({
     baseURL: import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000',
@@ -41,7 +46,7 @@ api.interceptors.response.use(
             const refreshToken = getRefreshToken();
             if (!refreshToken) {
                 removeTokens();
-                window.location.href = "/login";
+                window.location.href = "/auth/login";
                 return Promise.reject(error);
             }
 
@@ -68,14 +73,17 @@ api.interceptors.response.use(
             } catch (err) {
                 // لو فشل التجديد، اعمل logout أو redirect
                 removeTokens()
-                window.location.href = "/login";
+                window.location.href = "/auth/login";
                 return Promise.reject(err);
             }
         }
 
-        if (error.response.status === 403) {
-            removeTokens()
-            window.location.href = "/login";
+        if (error.response?.status === 401 || error.response?.status === 403) {
+            handleLogout();
+            removeTokens();
+
+            window.location.href = "/auth/login";
+            return Promise.reject(error);
         }
 
         return Promise.reject(error);
